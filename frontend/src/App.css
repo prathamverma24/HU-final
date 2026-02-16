@@ -1,0 +1,31 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lora', serif;
+  background: #f3f4f6;
+  color: #1f2937;
+}
+
+.App {
+  min-height: 100vh;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-size: 1.5rem;
+  color: #2563eb;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
+  }
+}
