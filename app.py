@@ -42,11 +42,22 @@ def home():
     - Fetches all active events ordered by event date
     - Fetches all active happenings ordered by creation date (newest first)
     """
-    # Query database for active events, ordered by event date
-    events = Event.query.filter_by(is_active=True).order_by(Event.event_date).all()
-    # Query database for active happenings, ordered by newest first
-    happenings = Happening.query.filter_by(is_active=True).order_by(Happening.created_at.desc()).all()
+    try:
+        # Query database for active events, ordered by event date
+        events = Event.query.filter_by(is_active=True).order_by(Event.event_date).all()
+        # Query database for active happenings, ordered by newest first
+        happenings = Happening.query.filter_by(is_active=True).order_by(Happening.created_at.desc()).all()
+    except Exception as e:
+        print(f'Database query error: {e}')
+        # Return empty lists if database is not available
+        events = []
+        happenings = []
     return render_template('index.html', events=events, happenings=happenings)
+
+@app.route('/health')
+def health():
+    """Health check endpoint for Vercel"""
+    return {'status': 'ok', 'message': 'Flask app is running'}, 200
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
@@ -332,6 +343,7 @@ def init_db():
 
 # Database Initialization on Startup
 # This runs when the app starts (important for Vercel serverless)
+# Wrapped in try-except to prevent crashes if database is not configured
 try:
     with app.app_context():
         # Create all database tables if they don't exist
@@ -340,16 +352,19 @@ try:
         
         # Create default admin user if it doesn't exist
         # This ensures there's always an admin account to access the dashboard
-        admin = Admin.query.filter_by(username='admin').first()
-        if not admin:
-            admin = Admin(username='admin')
-            admin.set_password('admin123')
-            db.session.add(admin)
-            db.session.commit()
-            print('Admin user created successfully')
+        try:
+            admin = Admin.query.filter_by(username='admin').first()
+            if not admin:
+                admin = Admin(username='admin')
+                admin.set_password('admin123')
+                db.session.add(admin)
+                db.session.commit()
+                print('Admin user created successfully')
+        except Exception as e:
+            print(f'Admin creation skipped: {e}')
 except Exception as e:
-    print(f'Database initialization warning: {e}')
-    # Continue anyway - database might initialize on first request
+    print(f'Database initialization skipped: {e}')
+    # App will continue to run, but database features may not work
         db.session.add(admin)
         db.session.commit()
         print('Admin user created (username: admin, password: admin123)')
