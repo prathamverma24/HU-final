@@ -6,15 +6,17 @@ load_dotenv()
 
 class Config:
     # Secret key for session management and CSRF protection
-    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key-change-in-production')
+    SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key-change-in-production-12345')
     
     # Database configuration with SSL support for Supabase/PostgreSQL
-    # Gets DATABASE_URL from environment variables, defaults to SQLite for local dev
-    database_url = os.getenv('DATABASE_URL', 'sqlite:///university.db')
+    # Gets DATABASE_URL from environment variables, defaults to in-memory SQLite
+    database_url = os.getenv('DATABASE_URL')
     
-    # Add SSL mode for PostgreSQL connections (required by Supabase and most cloud providers)
-    # Only applies to PostgreSQL URLs, SQLite remains unchanged
-    if database_url and database_url.startswith('postgresql'):
+    # If no DATABASE_URL is set, use in-memory SQLite (works on Vercel without persistence)
+    if not database_url:
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+    elif database_url.startswith('postgresql'):
+        # Add SSL mode for PostgreSQL connections (required by Supabase and most cloud providers)
         if '?' in database_url:
             # If URL already has query parameters, append with &
             SQLALCHEMY_DATABASE_URI = database_url + '&sslmode=require'
