@@ -12,9 +12,13 @@ class Config:
     # Gets DATABASE_URL from environment variables, defaults to in-memory SQLite
     database_url = os.getenv('DATABASE_URL')
     
-    # If no DATABASE_URL is set, use in-memory SQLite (works on Vercel without persistence)
+    # If no DATABASE_URL is set, use persistent SQLite database file
     if not database_url:
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+        # Use instance folder for database file
+        instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+        os.makedirs(instance_path, exist_ok=True)
+        db_path = os.path.join(instance_path, 'university.db')
+        SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
     elif database_url.startswith('postgresql'):
         # Add SSL mode for PostgreSQL connections (required by Supabase and most cloud providers)
         if '?' in database_url:

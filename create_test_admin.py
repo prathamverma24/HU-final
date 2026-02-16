@@ -1,6 +1,12 @@
 #!/usr/bin/env python
 """Script to create a test admin user for the admin dashboard"""
 
+import sys
+import os
+
+# Add backend directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'backend'))
+
 from app import app, db
 from models import Admin
 
@@ -14,6 +20,8 @@ def create_test_admin():
         existing_admin = Admin.query.filter_by(username='admin').first()
         if existing_admin:
             print("Admin user 'admin' already exists!")
+            print("  Username: admin")
+            print("  Password: admin123")
             return
         
         # Create new admin user

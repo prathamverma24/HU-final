@@ -9,6 +9,14 @@ function AdminLogin() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // Check if already logged in
+  React.useEffect(() => {
+    const isLoggedIn = localStorage.getItem('adminLoggedIn');
+    if (isLoggedIn === 'true') {
+      navigate('/admin/dashboard');
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     setCredentials({
       ...credentials,
@@ -22,9 +30,18 @@ function AdminLogin() {
     setError('');
 
     try {
-      await adminLogin(credentials);
+      const response = await adminLogin(credentials);
+      console.log('Login response:', response);
+      
+      // Store login state in localStorage
+      localStorage.setItem('adminLoggedIn', 'true');
+      localStorage.setItem('adminUsername', response.user.username);
+      
+      // Navigate to dashboard
       navigate('/admin/dashboard');
     } catch (error) {
+      console.error('Login error:', error);
+      console.error('Error response:', error.response);
       setError('Invalid username or password');
     } finally {
       setLoading(false);

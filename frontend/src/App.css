@@ -8,10 +8,12 @@ body {
   font-family: 'Lora', serif;
   background: #f3f4f6;
   color: #1f2937;
+  overflow-x: hidden;
 }
 
 .App {
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .loading {
@@ -27,5 +29,24 @@ body {
 @media (max-width: 640px) {
   body {
     font-size: 14px;
+  }
+}
+
+/* Prevent horizontal scroll on mobile */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Touch-friendly buttons on mobile */
+@media (hover: none) and (pointer: coarse) {
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
   }
 }

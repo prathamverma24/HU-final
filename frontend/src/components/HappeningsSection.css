@@ -43,6 +43,8 @@
   width: 100%;
   height: 220px;
   object-fit: cover;
+  object-position: center;
+  display: block;
 }
 
 .happening-content {
@@ -101,5 +103,40 @@
   
   .happening-card img {
     height: 180px;
+  }
+}
+
+
+/* Additional mobile improvements */
+@media (max-width: 480px) {
+  .happenings-section {
+    padding: 3rem 1rem;
+  }
+  
+  .happenings-container h2 {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .happening-card img {
+    height: 160px;
+  }
+  
+  .happening-content {
+    padding: 1rem;
+  }
+  
+  .happening-content h3 {
+    font-size: 1rem;
+  }
+  
+  .happening-content p {
+    font-size: 0.85rem;
+  }
+  
+  .swiper-navigation button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.25rem;
   }
 }

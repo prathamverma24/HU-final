@@ -5,34 +5,35 @@ function EventsSection({ events }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const eventsPerPage = 4;
 
+  // Default events with DJ Night first
   const defaultEvents = [
     {
       id: 1,
-      title: 'Canvas Competition',
-      description: 'Unleash your creativity in this exciting canvas art competition. Showcase your artistic talent and win amazing prizes...',
+      title: 'DJ Night',
+      description: "let's groove to music and break the floor. This message is for all come and lets slay the dance the moves on the floor together and make this valentine dreamy.",
       event_date: '2026-02-14',
-      image_path: 'images/canvacomp.jpeg'
+      image_path: '/images/djnight.jpeg'
     },
     {
       id: 2,
-      title: 'DJ Night',
-      description: 'Dance the night away with electrifying music and performances by top DJs. An unforgettable evening of entertainment...',
-      event_date: '2026-02-15',
-      image_path: 'images/djnight.jpeg'
+      title: 'Canvas Competition',
+      description: 'Unleash your creativity in this exciting canvas art competition. Showcase your artistic talent and win amazing prizes...',
+      event_date: '2026-02-14',
+      image_path: '/images/canvacomp.jpeg'
     },
     {
       id: 3,
       title: 'Photography Competition',
       description: 'Capture the essence of moments. Participate in our photography competition and exhibit your best work...',
       event_date: '2026-02-14',
-      image_path: 'images/photographycomp.jpeg'
+      image_path: '/images/photographycomp.jpeg'
     },
     {
       id: 4,
       title: 'Ramp Walk',
       description: 'Showcase fashion and style on the ramp. A glamorous event featuring latest trends and talented models...',
       event_date: '2026-02-15',
-      image_path: 'images/rampwalk.jpeg'
+      image_path: '/images/rampwalk.jpeg'
     }
   ];
 
@@ -70,7 +71,17 @@ function EventsSection({ events }) {
             return (
               <div key={event.id} className="event-card">
                 <div className="event-image-wrapper">
-                  <img src={`/${event.image_path}`} alt={event.title} />
+                  <img 
+                    src={event.image_path} 
+                    alt={event.title}
+                    onError={(e) => {
+                      console.error('Image failed to load:', event.image_path);
+                      e.target.style.border = '2px solid red';
+                    }}
+                    onLoad={(e) => {
+                      console.log('Image loaded successfully:', event.image_path);
+                    }}
+                  />
                   <div className="event-date-badge">
                     <span className="date-day">{day}</span>
                     <span className="date-month">{month}</span>

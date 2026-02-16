@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Event Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .image-test {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+        }
+        img {
+            max-width: 300px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+        h2 {
+            color: #333;
+        }
+        .status {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Images Test</h1>
+    
+    <div class="image-test">
+        <h2>1. DJ Night</h2>
+        <img src="/images/djnight.jpeg" alt="DJ Night" onerror="this.style.border='3px solid red'" onload="this.nextElementSibling.style.display='block'">
+        <p class="status" style="display:none">✓ Image loaded successfully</p>
+    </div>
+    
+    <div class="image-test">
+        <h2>2. Canvas Competition</h2>
+        <img src="/images/canvacomp.jpeg" alt="Canvas Competition" onerror="this.style.border='3px solid red'" onload="this.nextElementSibling.style.display='block'">
+        <p class="status" style="display:none">✓ Image loaded successfully</p>
+    </div>
+    
+    <div class="image-test">
+        <h2>3. Photography Competition</h2>
+        <img src="/images/photographycomp.jpeg" alt="Photography Competition" onerror="this.style.border='3px solid red'" onload="this.nextElementSibling.style.display='block'">
+        <p class="status" style="display:none">✓ Image loaded successfully</p>
+    </div>
+    
+    <div class="image-test">
+        <h2>4. Ramp Walk</h2>
+        <img src="/images/rampwalk.jpeg" alt="Ramp Walk" onerror="this.style.border='3px solid red'" onload="this.nextElementSibling.style.display='block'">
+        <p class="status" style="display:none">✓ Image loaded successfully</p>
+    </div>
+    
+    <p><a href="/">← Back to Home</a></p>
+</body>
+</html>

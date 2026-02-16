@@ -70,7 +70,9 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   transition: transform 0.3s;
+  display: block;
 }
 
 .why-card:hover img {
@@ -153,5 +155,48 @@
   .why-card:nth-child(4),
   .why-card:nth-child(5) {
     grid-column: 1 / 2;
+  }
+}
+
+
+/* Additional mobile improvements */
+@media (max-width: 480px) {
+  .why-section {
+    padding: 3rem 1rem;
+  }
+  
+  .why-container h2 {
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .why-description {
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .why-grid {
+    gap: 1rem;
+  }
+  
+  .why-card {
+    height: 220px;
+  }
+  
+  .why-overlay {
+    padding: 1.5rem;
+  }
+  
+  .why-number {
+    font-size: 3rem;
+  }
+  
+  .why-title {
+    font-size: 1.25rem;
+  }
+  
+  .why-subtitle {
+    font-size: 0.8rem;
   }
 }

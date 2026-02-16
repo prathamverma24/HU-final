@@ -201,3 +201,57 @@
     font-size: 1.5rem;
   }
 }
+
+
+/* Additional mobile improvements */
+@media (max-width: 480px) {
+  .accreditations-section {
+    padding: 3rem 1rem;
+  }
+  
+  .accreditations-grid {
+    gap: 2rem;
+  }
+  
+  .accreditations-left h2 {
+    font-size: 1.75rem;
+  }
+  
+  .accreditations-left h3 {
+    font-size: 1.25rem;
+  }
+  
+  .tagline {
+    font-size: 1rem;
+  }
+  
+  .description {
+    font-size: 0.9rem;
+  }
+  
+  .ranking-card {
+    padding: 1rem;
+  }
+  
+  .ranking-card h4 {
+    font-size: 1.5rem;
+  }
+  
+  .ranking-card p {
+    font-size: 0.8rem;
+  }
+  
+  .know-more-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  .accreditations-right {
+    padding: 1.5rem;
+  }
+  
+  .accreditations-right h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+}

@@ -1,0 +1,140 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './AddContent.css';
+
+function AddHappening() {
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    image: null
+  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [preview, setPreview] = useState(null);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        image: file
+      }));
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('description', formData.description);
+      if (formData.image) {
+        formDataToSend.append('image', formData.image);
+      }
+
+      // TODO: Add API call to submit happening
+      console.log('Happening data:', formData);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      alert('Happening added successfully!');
+      navigate('/admin/dashboard');
+    } catch (err) {
+      setError('Failed to add happening. Please try again.');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="add-content-page">
+      <div className="add-content-container">
+        <div className="page-header">
+          <button onClick={() => navigate('/admin/dashboard')} className="back-btn">
+            ← Back to Dashboard
+          </button>
+          <h1>📰 Add New Happening</h1>
+        </div>
+
+        <form onSubmit={handleSubmit} className="content-form">
+          <div className="form-group">
+            <label htmlFor="title">Happening Title *</label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              value={formData.title}
+              onChange={handleChange}
+              placeholder="Enter happening title"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="description">Happening Description *</label>
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="Enter happening description"
+              rows="6"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="image">Happening Image *</label>
+            <input
+              type="file"
+              id="image"
+              name="image"
+              onChange={handleImageChange}
+              accept="image/*"
+              required
+            />
+            {preview && (
+              <div className="image-preview">
+                <img src={preview} alt="Preview" />
+              </div>
+            )}
+          </div>
+
+          {error && <div className="error-message">{error}</div>}
+
+          <div className="form-actions">
+            <button type="button" onClick={() => navigate('/admin/dashboard')} className="cancel-btn">
+              Cancel
+            </button>
+            <button type="submit" disabled={loading} className="submit-btn">
+              {loading ? 'Adding...' : 'Add Happening'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default AddHappening;
