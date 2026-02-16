@@ -9,21 +9,26 @@
   margin: 0 auto;
 }
 
-.events-container h2 {
+.events-title {
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 3rem;
   color: white;
+  text-decoration: underline;
+  text-decoration-color: white;
+  text-decoration-thickness: 4px;
+  text-underline-offset: 8px;
 }
 
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .event-card {
-  background: #1f2937;
+  background: #1a1a1a;
   border-radius: 1rem;
   overflow: hidden;
   transition: transform 0.3s;
@@ -33,10 +38,45 @@
   transform: translateY(-4px);
 }
 
-.event-card img {
+.event-image-wrapper {
+  position: relative;
   width: 100%;
-  height: 200px;
+  height: 250px;
+  overflow: hidden;
+}
+
+.event-image-wrapper img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
+}
+
+.event-date-badge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #00d9ff;
+  color: #000;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  box-shadow: 0 4px 8px rgba(0, 217, 255, 0.3);
+}
+
+.date-day {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.date-month {
+  font-size: 0.75rem;
+  line-height: 1;
+  margin-top: 2px;
 }
 
 .event-content {
@@ -46,23 +86,69 @@
 .event-content h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   color: white;
-}
-
-.event-date {
-  color: #10b981;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
 }
 
 .event-content p {
   color: #d1d5db;
   line-height: 1.6;
+  font-size: 0.9rem;
 }
 
-@media (max-width: 768px) {
-  .events-container h2 {
+.events-navigation {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.nav-arrow {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: transparent;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-arrow:hover:not(:disabled) {
+  background: white;
+  color: black;
+}
+
+.nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1200px) {
+  .events-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .events-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .events-title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .events-title {
     font-size: 2rem;
   }
 }

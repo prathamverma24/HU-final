@@ -1,31 +1,36 @@
 .about-section {
   padding: 4rem 2rem;
   background: white;
+  position: relative;
+  overflow: hidden;
 }
 
 .about-container {
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
+  gap: 4rem;
   align-items: center;
 }
 
 .about-text h2 {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 900;
   margin-bottom: 1.5rem;
-  color: black;
-  line-height: 1.2;
+  color: #000;
+  line-height: 1.1;
+  font-family: 'Arial Black', sans-serif;
 }
 
 .about-text p {
-  font-size: 1.125rem;
-  color: #4b5563;
+  font-size: 1rem;
+  color: #1f2937;
   line-height: 1.8;
   margin-bottom: 1.5rem;
 }
@@ -34,15 +39,19 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: black;
-  font-weight: 600;
+  color: #000;
+  font-weight: 700;
   text-decoration: none;
   transition: gap 0.3s;
+  font-size: 1.1rem;
+}
+
+.know-more-link span {
+  font-size: 1.2rem;
 }
 
 .know-more-link:hover {
   gap: 1rem;
-  color: #2563eb;
 }
 
 .stats-grid {
@@ -53,19 +62,26 @@
 
 .stat-card {
   position: relative;
-  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
   border-radius: 1.5rem;
   padding: 2rem;
-  height: 250px;
+  min-height: 200px;
   overflow: hidden;
   transition: transform 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stat-card:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
-.stat-card img {
+.stat-card.with-image {
+  background: #1f2937;
+}
+
+.stat-card.with-image img {
   position: absolute;
   top: 0;
   left: 0;
@@ -75,6 +91,21 @@
   opacity: 0.7;
 }
 
+.stat-card.dark {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: white;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-card.innovation {
+  background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
+  color: #000;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
 .stat-overlay {
   position: relative;
   z-index: 1;
@@ -82,18 +113,48 @@
 }
 
 .stat-number {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 900;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
+  color: white;
 }
 
 .stat-label {
-  font-size: 1.125rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: white;
+}
+
+.stat-icon {
+  font-size: 2.5rem;
+  margin-top: 0.5rem;
+}
+
+.stat-label-main {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #000;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+.stat-icon-bottom {
+  font-size: 2.5rem;
+  text-align: right;
 }
 
 @media (max-width: 1024px) {
   .about-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-text h2 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
     grid-template-columns: 1fr;
   }
   

@@ -1,77 +1,155 @@
-.programs-section {
+/* Find a Program Section */
+.find-program-section {
   padding: 4rem 2rem;
-  background: #f9fafb;
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+  position: relative;
+  overflow: hidden;
 }
 
-.programs-container {
+.find-program-container {
   max-width: 1400px;
   margin: 0 auto;
 }
 
-.programs-container h2 {
+.find-program-container h2 {
   font-size: 3rem;
-  font-weight: 900;
+  font-weight: 400;
+  color: white;
   margin-bottom: 3rem;
-  text-align: center;
-  color: black;
 }
 
-.programs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
+.find-program-container h2 strong {
+  font-weight: 900;
 }
 
-.program-card {
-  background: white;
-  border-radius: 1rem;
-  overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s;
-  text-decoration: none;
-  color: inherit;
+.tabs-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  position: relative;
 }
 
-.program-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+.tabs-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.2);
 }
 
-.program-card img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.program-content {
-  padding: 1.5rem;
-  text-align: center;
-}
-
-.program-content h3 {
-  font-size: 1.25rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #1f2937;
-}
-
-.visit-btn {
-  padding: 0.75rem 1.5rem;
-  background: #10b981;
+.tab-button {
+  padding: 0.875rem 1.5rem;
+  background: transparent;
   color: white;
   border: none;
   border-radius: 9999px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s;
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.visit-btn:hover {
-  background: #059669;
+.tab-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.tab-button.active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.tab-indicator {
+  color: #10b981;
+  font-size: 0.75rem;
+}
+
+.programs-list {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.program-item {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.program-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(8px);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.program-item.highlight {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.program-item.highlight:hover {
+  background: rgba(16, 185, 129, 0.25);
+}
+
+.program-info h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+
+.program-info p {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+}
+
+.program-arrow {
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.3s;
+}
+
+.program-item:hover .program-arrow {
+  color: white;
+  transform: translateX(4px);
+}
+
+@media (max-width: 1024px) {
+  .programs-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .find-program-container h2 {
+    font-size: 2.5rem;
+  }
 }
 
 @media (max-width: 768px) {
-  .programs-container h2 {
+  .programs-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .find-program-container h2 {
     font-size: 2rem;
+  }
+  
+  .tabs-container {
+    flex-wrap: nowrap;
+    overflow-x: scroll;
   }
 }

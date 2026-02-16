@@ -1,4 +1,5 @@
 import React from 'react';
+import SplitText from './SplitText';
 import './HeroSection.css';
 
 function HeroSection() {
@@ -30,8 +31,46 @@ function HeroSection() {
       {/* Hero Content */}
       <div className="hero-content">
         <div className="hero-text">
-          <h1>ADMISSIONS 2026 OPEN</h1>
-          <p>Join Haridwar University's programs, where innovation, technology, and values unite to shape a better tomorrow for all.</p>
+          <div className="hero-title-wrapper">
+            <SplitText
+              text="ADMISSIONS"
+              tag="h1"
+              splitType="chars"
+              delay={30}
+              duration={0.8}
+              from={{ opacity: 0, y: 50 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0}
+              rootMargin="0px"
+              textAlign="left"
+              className="hero-title-line"
+            />
+            <SplitText
+              text="2026 OPEN"
+              tag="h1"
+              splitType="chars"
+              delay={30}
+              duration={0.8}
+              from={{ opacity: 0, y: 50 }}
+              to={{ opacity: 1, y: 0 }}
+              threshold={0}
+              rootMargin="0px"
+              textAlign="left"
+              className="hero-title-line"
+            />
+          </div>
+          <SplitText
+            text="Join Haridwar University's programs, where innovation, technology, and values unite to shape a better tomorrow for all."
+            tag="p"
+            splitType="words"
+            delay={20}
+            duration={0.6}
+            from={{ opacity: 0, y: 30 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0}
+            rootMargin="0px"
+            textAlign="left"
+          />
           <a href="https://huroorkee.ac.in/apply-now" target="_blank" rel="noopener noreferrer" className="apply-btn">
             <span>+</span> Apply Now
           </a>

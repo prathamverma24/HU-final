@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { getEvents, getHappenings } from '../services/api';
 import HeroSection from '../components/HeroSection';
 import AboutSection from '../components/AboutSection';
+import AccreditationsSection from '../components/AccreditationsSection';
 import ProgramsSection from '../components/ProgramsSection';
 import SportsGallery from '../components/SportsGallery';
+import WhySection from '../components/WhySection';
 import HappeningsSection from '../components/HappeningsSection';
 import EventsSection from '../components/EventsSection';
-import AccreditationsSection from '../components/AccreditationsSection';
 import Footer from '../components/Footer';
 
 function Home() {
@@ -41,11 +42,12 @@ function Home() {
     <div className="home">
       <HeroSection />
       <AboutSection />
-      <ProgramsSection />
+      <AccreditationsSection />
       <SportsGallery />
+      <ProgramsSection />
+      <WhySection />
       <HappeningsSection happenings={happenings} />
       <EventsSection events={events} />
-      <AccreditationsSection />
       <Footer />
     </div>
   );
