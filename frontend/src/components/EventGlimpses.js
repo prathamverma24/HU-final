@@ -24,8 +24,8 @@ function EventGlimpses() {
           hashtags: "#AlumniMeet #HUFamily #Reunion"
         };
         
-        // Combine Alumni Meet with API data (remove duplicates by title)
-        const apiGlimpses = glimpsesData || [];
+        // Validate that glimpsesData is an array
+        const apiGlimpses = Array.isArray(glimpsesData) ? glimpsesData : [];
         const hasAlumniMeet = apiGlimpses.some(g => g.title === "Alumni Meet");
         
         if (hasAlumniMeet) {

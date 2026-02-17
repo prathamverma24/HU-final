@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://web-production-bd5a.up.railway.app/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,6 +9,22 @@ const api = axios.create({
   },
   withCredentials: true,
 });
+
+// Add response interceptor to handle HTML responses
+api.interceptors.response.use(
+  (response) => {
+    // Check if response is HTML instead of JSON
+    if (typeof response.data === 'string' && response.data.includes('<!doctype html>')) {
+      console.error('Received HTML instead of JSON from API');
+      return Promise.reject(new Error('API returned HTML instead of JSON. Backend may be down.'));
+    }
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error);
+    return Promise.reject(error);
+  }
+);
 
 // Events API
 export const getEvents = async () => {

@@ -37,11 +37,15 @@ function AdminDashboard() {
         getHappenings(),
         getGlimpses()
       ]);
-      setEvents(eventsData);
-      setHappenings(happeningsData);
-      setGlimpses(glimpsesData);
+      setEvents(Array.isArray(eventsData) ? eventsData : []);
+      setHappenings(Array.isArray(happeningsData) ? happeningsData : []);
+      setGlimpses(Array.isArray(glimpsesData) ? glimpsesData : []);
     } catch (error) {
       console.error('Error fetching data:', error);
+      // Set empty arrays on error
+      setEvents([]);
+      setHappenings([]);
+      setGlimpses([]);
     }
   }, []);
 
