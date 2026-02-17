@@ -4,9 +4,18 @@ from flask_mail import Mail, Message
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.utils import secure_filename
 import os
+import sys
 from datetime import datetime
-from backend.config import Config
-from backend.models import db, Admin, Event, Happening, Glimpse
+
+# Add parent directory to path for imports
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from backend.config import Config
+    from backend.models import db, Admin, Event, Happening, Glimpse
+except ImportError:
+    from config import Config
+    from models import db, Admin, Event, Happening, Glimpse
 
 # Initialize Flask API application
 # Set static folder to serve React build
