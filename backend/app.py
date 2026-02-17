@@ -640,14 +640,36 @@ except Exception as e:
 
 # ============= SERVE REACT APP =============
 
-# Serve React static files
+# Serve React static files (only if build folder exists - for local development)
+# On Railway, frontend is served by Vercel, so this won't be used
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve_react(path):
+    # Check if static folder exists (it won't on Railway)
+    if not os.path.exists(app.static_folder):
+        return jsonify({
+            'message': 'Backend API is running',
+            'status': 'ok',
+            'endpoints': {
+                'health': '/api/health',
+                'events': '/api/events',
+                'happenings': '/api/happenings',
+                'glimpses': '/api/glimpses'
+            }
+        }), 200
+    
     if path != "" and os.path.exists(os.path.join(app.static_folder, path)):
         return send_from_directory(app.static_folder, path)
     else:
-        return send_from_directory(app.static_folder, 'index.html')
+        index_path = os.path.join(app.static_folder, 'index.html')
+        if os.path.exists(index_path):
+            return send_from_directory(app.static_folder, 'index.html')
+        else:
+            return jsonify({
+                'message': 'Backend API is running',
+                'status': 'ok',
+                'note': 'Frontend is served separately on Vercel'
+            }), 200
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
