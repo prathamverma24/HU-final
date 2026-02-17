@@ -44,11 +44,6 @@ CORS(app, resources={
         "supports_credentials": True
     }
 })
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
-    }
-})
 
 # Initialize extensions
 db.init_app(app)
