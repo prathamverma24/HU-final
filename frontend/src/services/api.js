@@ -126,4 +126,38 @@ export const getCompletedEvents = async () => {
   return response.data;
 };
 
+// Glimpses API
+export const getGlimpses = async () => {
+  const response = await api.get('/glimpses');
+  return response.data;
+};
+
+export const addGlimpse = async (formData) => {
+  const response = await api.post('/admin/glimpses', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
+export const deleteGlimpse = async (glimpseId) => {
+  const response = await api.delete(`/admin/glimpses/${glimpseId}`);
+  return response.data;
+};
+
+export const getGlimpse = async (glimpseId) => {
+  const response = await api.get(`/admin/glimpses/${glimpseId}`);
+  return response.data;
+};
+
+export const updateGlimpse = async (glimpseId, formData) => {
+  const response = await api.put(`/admin/glimpses/${glimpseId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+};
+
 export default api;

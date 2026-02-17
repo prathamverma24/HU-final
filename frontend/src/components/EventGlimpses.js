@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getCompletedEvents } from '../services/api';
+import { getGlimpses } from '../services/api';
 import './EventGlimpses.css';
 
 function EventGlimpses() {
@@ -8,30 +8,43 @@ function EventGlimpses() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchCompletedEvents = async () => {
+    const fetchGlimpses = async () => {
       try {
-        const completedEvents = await getCompletedEvents();
+        console.log('Fetching glimpses from API...');
+        const glimpsesData = await getGlimpses();
+        console.log('Glimpses received:', glimpsesData);
         
-        // Add Alumni Meet as a static card at the beginning
+        // Always include Alumni Meet as first item
         const alumniMeet = {
-          id: 'alumni-meet',
+          id: 'alumni-meet-static',
           title: "Alumni Meet",
           description: "A heartwarming reunion of HU family members sharing memories and celebrating success stories",
           image_path: "images/logo.jpeg",
-          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE"
+          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE",
+          hashtags: "#AlumniMeet #HUFamily #Reunion"
         };
         
-        // Combine alumni meet with completed events
-        setGlimpses([alumniMeet, ...completedEvents]);
+        // Combine Alumni Meet with API data (remove duplicates by title)
+        const apiGlimpses = glimpsesData || [];
+        const hasAlumniMeet = apiGlimpses.some(g => g.title === "Alumni Meet");
+        
+        if (hasAlumniMeet) {
+          setGlimpses(apiGlimpses);
+        } else {
+          setGlimpses([alumniMeet, ...apiGlimpses]);
+        }
       } catch (error) {
-        console.error('Error fetching completed events:', error);
-        // If API fails, still show Alumni Meet
+        console.error('Error fetching glimpses:', error);
+        console.error('Error details:', error.response || error.message);
+        
+        // On error, show Alumni Meet as fallback
         const alumniMeet = {
-          id: 'alumni-meet',
+          id: 'alumni-meet-static',
           title: "Alumni Meet",
           description: "A heartwarming reunion of HU family members sharing memories and celebrating success stories",
           image_path: "images/logo.jpeg",
-          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE"
+          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE",
+          hashtags: "#AlumniMeet #HUFamily #Reunion"
         };
         setGlimpses([alumniMeet]);
       } finally {
@@ -39,7 +52,7 @@ function EventGlimpses() {
       }
     };
 
-    fetchCompletedEvents();
+    fetchGlimpses();
   }, []);
 
   const openVideo = (videoUrl) => {
@@ -58,16 +71,15 @@ function EventGlimpses() {
     return (
       <section className="event-glimpses">
         <div className="glimpses-container">
-          <p>Loading event glimpses...</p>
+          <p style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+            Loading event glimpses...
+          </p>
         </div>
       </section>
     );
   }
 
-  if (glimpses.length === 0) {
-    return null; // Don't show section if no events
-  }
-
+  // Always show section (Alumni Meet is always included as fallback)
   return (
     <section className="event-glimpses">
       <div className="glimpses-container">

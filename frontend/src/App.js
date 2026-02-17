@@ -6,8 +6,10 @@ import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
 import AddEvent from './pages/AddEvent';
 import AddHappening from './pages/AddHappening';
+import AddGlimpse from './pages/AddGlimpse';
 import EditEvent from './pages/EditEvent';
 import EditHappening from './pages/EditHappening';
+import EditGlimpse from './pages/EditGlimpse';
 import './App.css';
 
 function App() {
@@ -23,6 +25,8 @@ function App() {
           <Route path="/admin/events/edit/:id" element={<EditEvent />} />
           <Route path="/admin/happenings/add" element={<AddHappening />} />
           <Route path="/admin/happenings/edit/:id" element={<EditHappening />} />
+          <Route path="/admin/glimpses/add" element={<AddGlimpse />} />
+          <Route path="/admin/glimpses/edit/:id" element={<EditGlimpse />} />
         </Routes>
       </div>
     </Router>

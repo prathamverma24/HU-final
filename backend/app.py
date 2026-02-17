@@ -6,7 +6,7 @@ from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
 from config import Config
-from models import db, Admin, Event, Happening
+from models import db, Admin, Event, Happening, Glimpse
 
 # Initialize Flask API application
 # Set static folder to serve React build
@@ -44,6 +44,42 @@ os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+def convert_youtube_url_to_embed(url):
+    """
+    Convert any YouTube URL format to embed format
+    Handles: youtu.be, youtube.com/watch, m.youtube.com/watch, etc.
+    """
+    if not url:
+        return url
+    
+    # Already in embed format
+    if 'youtube.com/embed/' in url:
+        return url
+    
+    import re
+    
+    # Extract video ID from different formats
+    video_id = None
+    
+    # Format: https://youtu.be/VIDEO_ID
+    if 'youtu.be/' in url:
+        match = re.search(r'youtu\.be/([a-zA-Z0-9_-]+)', url)
+        if match:
+            video_id = match.group(1)
+    
+    # Format: https://www.youtube.com/watch?v=VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID
+    elif 'youtube.com/watch' in url or 'm.youtube.com/watch' in url:
+        match = re.search(r'[?&]v=([a-zA-Z0-9_-]+)', url)
+        if match:
+            video_id = match.group(1)
+    
+    # If we found a video ID, return embed URL
+    if video_id:
+        return f'https://www.youtube.com/embed/{video_id}'
+    
+    # Return original if we couldn't parse it
+    return url
 
 # ============= API ROUTES =============
 
@@ -425,6 +461,165 @@ def update_happening(happening_id):
         
         db.session.commit()
         return jsonify({'message': 'Happening updated successfully', 'happening': happening.to_dict()}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+# ============= GLIMPSES API =============
+
+# Get all glimpses
+@app.route('/api/glimpses', methods=['GET'])
+def get_glimpses():
+    try:
+        glimpses = Glimpse.query.filter_by(is_active=True).order_by(Glimpse.created_at.desc()).all()
+        return jsonify([glimpse.to_dict() for glimpse in glimpses]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Add new glimpse
+@app.route('/api/admin/glimpses', methods=['POST'])
+def add_glimpse():
+    try:
+        title = request.form.get('title')
+        description = request.form.get('description')
+        video_url = request.form.get('video_url')
+        hashtags = request.form.get('hashtags', '')
+        
+        if not all([title, description, video_url]):
+            return jsonify({'error': 'Title, description, and video URL are required'}), 400
+        
+        if 'image' not in request.files:
+            return jsonify({'error': 'Image is required'}), 400
+        
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        if file and allowed_file(file.filename):
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = secure_filename(file.filename)
+            unique_filename = f"{timestamp}_{filename}"
+            
+            static_images_path = os.path.join('static', 'images', unique_filename)
+            os.makedirs(os.path.dirname(static_images_path), exist_ok=True)
+            file.save(static_images_path)
+            
+            frontend_images_path = os.path.join('frontend', 'public', 'images', unique_filename)
+            os.makedirs(os.path.dirname(frontend_images_path), exist_ok=True)
+            file.seek(0)
+            file.save(frontend_images_path)
+            
+            glimpse = Glimpse(
+                title=title,
+                description=description,
+                image_path=f"images/{unique_filename}",
+                video_url=video_url,
+                hashtags=hashtags
+            )
+            db.session.add(glimpse)
+            db.session.commit()
+            
+            return jsonify({'message': 'Glimpse added successfully', 'glimpse': glimpse.to_dict()}), 201
+        else:
+            return jsonify({'error': 'Invalid file type'}), 400
+            
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+# Delete glimpse
+@app.route('/api/admin/glimpses/<int:glimpse_id>', methods=['DELETE'])
+def delete_glimpse(glimpse_id):
+    try:
+        glimpse = Glimpse.query.get(glimpse_id)
+        if not glimpse:
+            return jsonify({'error': 'Glimpse not found'}), 404
+        
+        if glimpse.image_path:
+            static_file_path = os.path.join('static', glimpse.image_path)
+            if os.path.exists(static_file_path):
+                os.remove(static_file_path)
+            
+            frontend_file_path = os.path.join('frontend', 'public', glimpse.image_path)
+            if os.path.exists(frontend_file_path):
+                os.remove(frontend_file_path)
+        
+        db.session.delete(glimpse)
+        db.session.commit()
+        
+        return jsonify({'message': 'Glimpse deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+# Get single glimpse by ID
+@app.route('/api/admin/glimpses/<int:glimpse_id>', methods=['GET'])
+def get_glimpse(glimpse_id):
+    try:
+        glimpse = Glimpse.query.get(glimpse_id)
+        if not glimpse:
+            return jsonify({'error': 'Glimpse not found'}), 404
+        return jsonify(glimpse.to_dict()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Update glimpse
+@app.route('/api/admin/glimpses/<int:glimpse_id>', methods=['PUT'])
+def update_glimpse(glimpse_id):
+    try:
+        glimpse = Glimpse.query.get(glimpse_id)
+        if not glimpse:
+            return jsonify({'error': 'Glimpse not found'}), 404
+        
+        # Get form data
+        title = request.form.get('title')
+        description = request.form.get('description')
+        video_url = request.form.get('video_url')
+        hashtags = request.form.get('hashtags', '')
+        
+        # Update fields
+        if title:
+            glimpse.title = title
+        if description:
+            glimpse.description = description
+        if video_url:
+            # Convert YouTube URL to embed format automatically
+            glimpse.video_url = convert_youtube_url_to_embed(video_url)
+        if hashtags is not None:  # Allow empty string
+            glimpse.hashtags = hashtags
+        
+        # Handle image upload if new image provided
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '' and allowed_file(file.filename):
+                # Delete old image
+                if glimpse.image_path:
+                    old_static_path = os.path.join('static', glimpse.image_path)
+                    if os.path.exists(old_static_path):
+                        os.remove(old_static_path)
+                    
+                    old_frontend_path = os.path.join('frontend', 'public', glimpse.image_path)
+                    if os.path.exists(old_frontend_path):
+                        os.remove(old_frontend_path)
+                
+                # Save new image
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = secure_filename(file.filename)
+                unique_filename = f"{timestamp}_{filename}"
+                
+                static_images_path = os.path.join('static', 'images', unique_filename)
+                os.makedirs(os.path.dirname(static_images_path), exist_ok=True)
+                file.save(static_images_path)
+                
+                frontend_images_path = os.path.join('frontend', 'public', 'images', unique_filename)
+                os.makedirs(os.path.dirname(frontend_images_path), exist_ok=True)
+                file.seek(0)
+                file.save(frontend_images_path)
+                
+                glimpse.image_path = f"images/{unique_filename}"
+        
+        db.session.commit()
+        return jsonify({'message': 'Glimpse updated successfully', 'glimpse': glimpse.to_dict()}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500

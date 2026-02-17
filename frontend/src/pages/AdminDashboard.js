@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogout, getEvents, getHappenings, deleteEvent, deleteHappening } from '../services/api';
+import { adminLogout, getEvents, getHappenings, getGlimpses, deleteEvent, deleteHappening, deleteGlimpse } from '../services/api';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
@@ -8,16 +8,17 @@ function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [events, setEvents] = useState([]);
   const [happenings, setHappenings] = useState([]);
+  const [glimpses, setGlimpses] = useState([]);
   const navigate = useNavigate();
 
   const checkAuth = useCallback(() => {
     try {
       // Check localStorage for login state
       const isLoggedIn = localStorage.getItem('adminLoggedIn');
-      const username = localStorage.getItem('adminUsername');
+      const email = localStorage.getItem('adminEmail');
       
-      if (isLoggedIn === 'true' && username) {
-        setAdmin({ username });
+      if (isLoggedIn === 'true' && email) {
+        setAdmin({ email });
       } else {
         navigate('/admin/login');
       }
@@ -31,12 +32,14 @@ function AdminDashboard() {
 
   const fetchData = useCallback(async () => {
     try {
-      const [eventsData, happeningsData] = await Promise.all([
+      const [eventsData, happeningsData, glimpsesData] = await Promise.all([
         getEvents(),
-        getHappenings()
+        getHappenings(),
+        getGlimpses()
       ]);
       setEvents(eventsData);
       setHappenings(happeningsData);
+      setGlimpses(glimpsesData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -51,7 +54,7 @@ function AdminDashboard() {
     try {
       // Clear localStorage
       localStorage.removeItem('adminLoggedIn');
-      localStorage.removeItem('adminUsername');
+      localStorage.removeItem('adminEmail');
       
       // Try to logout from backend (optional, don't wait for it)
       adminLogout().catch(() => {});
@@ -66,7 +69,7 @@ function AdminDashboard() {
   const handleMainWebsite = async () => {
     // Logout and redirect to main website
     localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminUsername');
+    localStorage.removeItem('adminEmail');
     adminLogout().catch(() => {});
     window.location.href = '/';
   };
@@ -99,6 +102,20 @@ function AdminDashboard() {
     }
   };
 
+  const handleDeleteGlimpse = async (glimpseId) => {
+    if (window.confirm('Are you sure you want to delete this glimpse?')) {
+      try {
+        await deleteGlimpse(glimpseId);
+        // Refresh glimpses list
+        fetchData();
+        alert('Glimpse deleted successfully!');
+      } catch (error) {
+        console.error('Error deleting glimpse:', error);
+        alert('Failed to delete glimpse. Please try again.');
+      }
+    }
+  };
+
   if (loading) {
     return <div className="admin-dashboard"><p>Loading...</p></div>;
   }
@@ -108,7 +125,7 @@ function AdminDashboard() {
       <div className="dashboard-header">
         <h1>Admin Dashboard</h1>
         <div className="admin-info">
-          <span>Welcome, {admin?.username}!</span>
+          <span>Welcome, {admin?.email}!</span>
           <button onClick={handleMainWebsite} className="main-website-btn">
             🏠 Main Website
           </button>
@@ -174,6 +191,39 @@ function AdminDashboard() {
               ))
             ) : (
               <p className="no-items">No happenings found. Add your first happening!</p>
+            )}
+          </div>
+        </div>
+
+        {/* Glimpses Management Section */}
+        <div className="dashboard-section">
+          <div className="section-header">
+            <h2>🎬 Event Glimpses Management</h2>
+            <button className="add-btn" onClick={() => navigate('/admin/glimpses/add')}>
+              + Add Glimpse
+            </button>
+          </div>
+          
+          <div className="items-grid">
+            {glimpses.length > 0 ? (
+              glimpses.map(glimpse => (
+                <div key={glimpse.id} className="item-card">
+                  <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
+                  <div className="item-info">
+                    <h3>{glimpse.title}</h3>
+                    <p>{glimpse.description.substring(0, 100)}...</p>
+                    {glimpse.hashtags && (
+                      <span className="item-hashtags">{glimpse.hashtags}</span>
+                    )}
+                  </div>
+                  <div className="item-actions">
+                    <button className="edit-btn" onClick={() => navigate(`/admin/glimpses/edit/${glimpse.id}`)}>Edit</button>
+                    <button className="delete-btn" onClick={() => handleDeleteGlimpse(glimpse.id)}>Delete</button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="no-items">No glimpses found. Add your first glimpse!</p>
             )}
           </div>
         </div>

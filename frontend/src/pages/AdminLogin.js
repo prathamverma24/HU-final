@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { adminLogin } from '../services/api';
 import { useNavigate } from 'react-router-dom';
 import './AdminLogin.css';
 
+// Hardcoded admin credentials
+const ADMIN_EMAIL = 'vermapratham2005@gmail.com';
+const ADMIN_PASSWORD = 'hu@123';
+
 function AdminLogin() {
-  const [credentials, setCredentials] = useState({ username: '', password: '' });
+  const [credentials, setCredentials] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -24,26 +27,23 @@ function AdminLogin() {
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    try {
-      const response = await adminLogin(credentials);
-      console.log('Login response:', response);
-      
+    // Validate credentials on frontend
+    if (credentials.email === ADMIN_EMAIL && credentials.password === ADMIN_PASSWORD) {
       // Store login state in localStorage
       localStorage.setItem('adminLoggedIn', 'true');
-      localStorage.setItem('adminUsername', response.user.username);
+      localStorage.setItem('adminEmail', ADMIN_EMAIL);
       
       // Navigate to dashboard
-      navigate('/admin/dashboard');
-    } catch (error) {
-      console.error('Login error:', error);
-      console.error('Error response:', error.response);
-      setError('Invalid username or password');
-    } finally {
+      setTimeout(() => {
+        navigate('/admin/dashboard');
+      }, 500);
+    } else {
+      setError('Invalid email or password');
       setLoading(false);
     }
   };
@@ -54,13 +54,14 @@ function AdminLogin() {
         <h1>Admin Login</h1>
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
-            <label htmlFor="username">Username</label>
+            <label htmlFor="email">Email</label>
             <input
-              type="text"
-              id="username"
-              name="username"
-              value={credentials.username}
+              type="email"
+              id="email"
+              name="email"
+              value={credentials.email}
               onChange={handleChange}
+              placeholder="Enter your email"
               required
             />
           </div>
@@ -72,6 +73,7 @@ function AdminLogin() {
               name="password"
               value={credentials.password}
               onChange={handleChange}
+              placeholder="Enter your password"
               required
             />
           </div>

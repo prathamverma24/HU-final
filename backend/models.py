@@ -74,3 +74,31 @@ class Happening(db.Model):
             'image_path': self.image_path,
             'is_active': self.is_active
         }
+
+# Glimpse Model - Stores event glimpses for "Enjoy with HU Family" section
+class Glimpse(db.Model):
+    """
+    Glimpse model for managing event glimpses with videos
+    Table: glimpse
+    """
+    id = db.Column(db.Integer, primary_key=True)  # Primary key
+    title = db.Column(db.String(200), nullable=False)  # Glimpse title
+    description = db.Column(db.Text, nullable=False)  # Glimpse description/caption
+    image_path = db.Column(db.String(300), nullable=False)  # Path to glimpse image
+    video_url = db.Column(db.String(500), nullable=False)  # YouTube video URL
+    hashtags = db.Column(db.String(500), nullable=True)  # Hashtags (comma-separated)
+    is_active = db.Column(db.Boolean, default=True)  # Toggle glimpse visibility
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)  # Creation timestamp
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)  # Last update timestamp
+    
+    def to_dict(self):
+        """Convert glimpse object to dictionary for JSON responses"""
+        return {
+            'id': self.id,
+            'title': self.title,
+            'description': self.description,
+            'image_path': self.image_path,
+            'video_url': self.video_url,
+            'hashtags': self.hashtags,
+            'is_active': self.is_active
+        }
