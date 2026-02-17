@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://web-production-bd5a.up.railway.app/api';
+// Hardcoded Railway backend URL for production
+const API_BASE_URL = 'https://web-production-bd5a.up.railway.app/api';
 
 console.log('API Base URL:', API_BASE_URL);
 
