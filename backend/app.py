@@ -642,6 +642,46 @@ def update_glimpse(glimpse_id):
 # Database initialization
 try:
     with app.app_context():
+        # Run migration to make image_path nullable if needed
+        import sqlite3
+        db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
+        if os.path.exists(db_path):
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            
+            # Check if glimpse table exists and needs migration
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='glimpse'")
+            if cursor.fetchone():
+                cursor.execute("PRAGMA table_info(glimpse)")
+                columns = cursor.fetchall()
+                image_path_col = [col for col in columns if col[1] == 'image_path']
+                
+                # If image_path exists and is NOT NULL, migrate it
+                if image_path_col and image_path_col[0][3] == 1:  # notnull = 1
+                    print("Migrating glimpse table to make image_path optional...")
+                    cursor.execute("""
+                        CREATE TABLE glimpse_new (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            title VARCHAR(200) NOT NULL,
+                            description TEXT NOT NULL,
+                            image_path VARCHAR(300),
+                            video_url VARCHAR(500) NOT NULL,
+                            hashtags VARCHAR(500),
+                            is_active BOOLEAN DEFAULT 1,
+                            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                        )
+                    """)
+                    cursor.execute("""
+                        INSERT INTO glimpse_new SELECT * FROM glimpse
+                    """)
+                    cursor.execute("DROP TABLE glimpse")
+                    cursor.execute("ALTER TABLE glimpse_new RENAME TO glimpse")
+                    conn.commit()
+                    print("✓ Migration completed!")
+            
+            conn.close()
+        
         db.create_all()
         admin = Admin.query.filter_by(username='admin').first()
         if not admin:
