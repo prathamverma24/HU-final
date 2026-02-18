@@ -110,8 +110,12 @@ function EventGlimpses() {
                     />
                     <div className="video-overlay"></div>
                   </>
-                ) : (
+                ) : glimpse.image_path ? (
                   <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
+                ) : (
+                  <div className="no-media-placeholder">
+                    <span>🎬</span>
+                  </div>
                 )}
                 {glimpse.video_url && (
                   <div className="play-overlay">

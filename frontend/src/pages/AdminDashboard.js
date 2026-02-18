@@ -212,7 +212,18 @@ function AdminDashboard() {
             {glimpses.length > 0 ? (
               glimpses.map(glimpse => (
                 <div key={glimpse.id} className="item-card">
-                  <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
+                  {glimpse.image_path ? (
+                    <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
+                  ) : (
+                    <div className="video-thumbnail">
+                      <iframe
+                        src={`${glimpse.video_url}?autoplay=0&mute=1`}
+                        title={glimpse.title}
+                        frameBorder="0"
+                        style={{ width: '100%', height: '200px', pointerEvents: 'none' }}
+                      />
+                    </div>
+                  )}
                   <div className="item-info">
                     <h3>{glimpse.title}</h3>
                     <p>{glimpse.description.substring(0, 100)}...</p>

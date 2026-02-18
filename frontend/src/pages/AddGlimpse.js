@@ -192,14 +192,13 @@ function AddGlimpse() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="image">Event Image *</label>
+            <label htmlFor="image">Event Image (optional)</label>
             <input
               type="file"
               id="image"
               name="image"
               onChange={handleImageChange}
               accept="image/*"
-              required
             />
             {preview && (
               <div className="image-preview">

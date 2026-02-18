@@ -84,7 +84,7 @@ class Glimpse(db.Model):
     id = db.Column(db.Integer, primary_key=True)  # Primary key
     title = db.Column(db.String(200), nullable=False)  # Glimpse title
     description = db.Column(db.Text, nullable=False)  # Glimpse description/caption
-    image_path = db.Column(db.String(300), nullable=False)  # Path to glimpse image
+    image_path = db.Column(db.String(300), nullable=True)  # Path to glimpse image (optional)
     video_url = db.Column(db.String(500), nullable=False)  # YouTube video URL
     hashtags = db.Column(db.String(500), nullable=True)  # Hashtags (comma-separated)
     is_active = db.Column(db.Boolean, default=True)  # Toggle glimpse visibility

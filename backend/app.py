@@ -503,40 +503,40 @@ def add_glimpse():
         if not all([title, description, video_url]):
             return jsonify({'error': 'Title, description, and video URL are required'}), 400
         
-        if 'image' not in request.files:
-            return jsonify({'error': 'Image is required'}), 400
+        # Handle optional image upload
+        image_path = None
+        if 'image' in request.files:
+            file = request.files['image']
+            if file and file.filename != '' and allowed_file(file.filename):
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = secure_filename(file.filename)
+                unique_filename = f"{timestamp}_{filename}"
+                
+                static_images_path = os.path.join('static', 'images', unique_filename)
+                os.makedirs(os.path.dirname(static_images_path), exist_ok=True)
+                file.save(static_images_path)
+                
+                frontend_images_path = os.path.join('frontend', 'public', 'images', unique_filename)
+                os.makedirs(os.path.dirname(frontend_images_path), exist_ok=True)
+                file.seek(0)
+                file.save(frontend_images_path)
+                
+                image_path = f"images/{unique_filename}"
         
-        file = request.files['image']
-        if file.filename == '':
-            return jsonify({'error': 'No file selected'}), 400
+        # Convert YouTube URL to embed format automatically
+        embed_url = convert_youtube_url_to_embed(video_url)
         
-        if file and allowed_file(file.filename):
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = secure_filename(file.filename)
-            unique_filename = f"{timestamp}_{filename}"
-            
-            static_images_path = os.path.join('static', 'images', unique_filename)
-            os.makedirs(os.path.dirname(static_images_path), exist_ok=True)
-            file.save(static_images_path)
-            
-            frontend_images_path = os.path.join('frontend', 'public', 'images', unique_filename)
-            os.makedirs(os.path.dirname(frontend_images_path), exist_ok=True)
-            file.seek(0)
-            file.save(frontend_images_path)
-            
-            glimpse = Glimpse(
-                title=title,
-                description=description,
-                image_path=f"images/{unique_filename}",
-                video_url=video_url,
-                hashtags=hashtags
-            )
-            db.session.add(glimpse)
-            db.session.commit()
-            
-            return jsonify({'message': 'Glimpse added successfully', 'glimpse': glimpse.to_dict()}), 201
-        else:
-            return jsonify({'error': 'Invalid file type'}), 400
+        glimpse = Glimpse(
+            title=title,
+            description=description,
+            image_path=image_path,
+            video_url=embed_url,
+            hashtags=hashtags
+        )
+        db.session.add(glimpse)
+        db.session.commit()
+        
+        return jsonify({'message': 'Glimpse added successfully', 'glimpse': glimpse.to_dict()}), 201
             
     except Exception as e:
         db.session.rollback()
