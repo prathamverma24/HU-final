@@ -68,18 +68,25 @@ function EventsSection({ events }) {
             const day = eventDate.getDate();
             const month = eventDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
             
+            // Handle both local and Cloudinary image paths
+            const imageSrc = event.image_path?.startsWith('http') 
+              ? event.image_path 
+              : `/${event.image_path}`;
+            
             return (
               <div key={event.id} className="event-card">
                 <div className="event-image-wrapper">
                   <img 
-                    src={event.image_path} 
+                    src={imageSrc} 
                     alt={event.title}
                     onError={(e) => {
-                      console.error('Image failed to load:', event.image_path);
-                      e.target.style.border = '2px solid red';
+                      console.error('Image failed to load:', imageSrc);
+                      // Hide the broken image by setting a gradient background
+                      e.target.style.display = 'none';
+                      e.target.parentElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                     }}
                     onLoad={(e) => {
-                      console.log('Image loaded successfully:', event.image_path);
+                      console.log('Image loaded successfully:', imageSrc);
                     }}
                   />
                   <div className="event-date-badge">
