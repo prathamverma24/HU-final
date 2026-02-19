@@ -1,6 +1,14 @@
-﻿FROM python:3.11-slim
+﻿FROM python:3.13-slim
 
 WORKDIR /app
+
+# Install PostgreSQL client libraries
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    libpq-dev \
+    libpq5 \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copy backend requirements and install
 COPY backend/requirements.txt requirements.txt
@@ -10,7 +18,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create instance directory for SQLite
-RUN mkdir -p backend/instance
+RUN mkdir -p backend/instance backend/static/images
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
