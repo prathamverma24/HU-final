@@ -2,9 +2,11 @@
 
 WORKDIR /app
 
-# Install system dependencies
+# Install system dependencies including PostgreSQL client library
 RUN apt-get update && apt-get install -y \
     gcc \
+    libpq-dev \
+    postgresql-client \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy backend requirements and install Python packages
@@ -22,5 +24,5 @@ ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 ENV PYTHONPATH=/app
 
-# Run gunicorn
-CMD ["sh", "-c", "gunicorn -w 4 -b 0.0.0.0:${PORT} backend.app:app"]
+# Run gunicorn (app.py is in /app directory after copying)
+CMD ["sh", "-c", "cd backend && gunicorn -w 4 -b 0.0.0.0:${PORT} app:app"]
