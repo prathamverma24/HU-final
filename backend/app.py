@@ -728,7 +728,14 @@ except Exception as e:
     import traceback
     traceback.print_exc()
 
-# ============= SERVE REACT APP =============
+# ============= SERVE STATIC FILES =============
+
+# Serve uploaded images
+@app.route('/images/<path:filename>')
+def serve_image(filename):
+    """Serve uploaded images from static/images folder"""
+    static_images_path = os.path.join(os.path.dirname(__file__), 'static', 'images')
+    return send_from_directory(static_images_path, filename)
 
 # Serve React static files (only if build folder exists - for local development)
 # On Railway, frontend is served by Vercel, so this won't be used
