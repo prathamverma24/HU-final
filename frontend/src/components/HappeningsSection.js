@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
 import 'swiper/css';
@@ -7,6 +7,7 @@ import './HappeningsSection.css';
 
 function HappeningsSection({ happenings }) {
   const swiperRef = useRef(null);
+  const [swiperInstance, setSwiperInstance] = useState(null);
 
   const defaultHappenings = [
     {
@@ -31,16 +32,29 @@ function HappeningsSection({ happenings }) {
 
   const displayHappenings = Array.isArray(happenings) && happenings.length > 0 ? happenings : defaultHappenings;
 
+  const handlePrev = () => {
+    if (swiperInstance) {
+      swiperInstance.slidePrev();
+    }
+  };
+
+  const handleNext = () => {
+    if (swiperInstance) {
+      swiperInstance.slideNext();
+    }
+  };
+
   return (
     <section className="happenings-section">
       <div className="happenings-container">
         <h2>HAPPENINGS AT HARIDWAR UNIVERSITY</h2>
         <Swiper
           ref={swiperRef}
+          onSwiper={setSwiperInstance}
           modules={[Navigation, Autoplay]}
           spaceBetween={24}
           slidesPerView={1}
-          loop={true}
+          loop={displayHappenings.length > 3}
           autoplay={{ delay: 5000, disableOnInteraction: false }}
           breakpoints={{
             640: { slidesPerView: 2 },
@@ -61,8 +75,8 @@ function HappeningsSection({ happenings }) {
           ))}
         </Swiper>
         <div className="swiper-navigation">
-          <button onClick={() => swiperRef.current?.swiper.slidePrev()}>←</button>
-          <button onClick={() => swiperRef.current?.swiper.slideNext()}>→</button>
+          <button onClick={handlePrev} aria-label="Previous slide">←</button>
+          <button onClick={handleNext} aria-label="Next slide">→</button>
         </div>
       </div>
     </section>
