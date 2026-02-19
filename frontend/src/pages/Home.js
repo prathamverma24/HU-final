@@ -10,6 +10,8 @@ import HappeningsSection from '../components/HappeningsSection';
 import EventsSection from '../components/EventsSection';
 import EventGlimpses from '../components/EventGlimpses';
 import AlumniCorner from '../components/AlumniCorner';
+import UtkarshSection from '../components/UtkarshSection';
+import TechnicalSection from '../components/TechnicalSection';
 import Footer from '../components/Footer';
 
 function Home() {
@@ -53,6 +55,8 @@ function Home() {
       <WhySection />
       <HappeningsSection happenings={happenings} />
       <EventsSection events={events} />
+      <UtkarshSection />
+      <TechnicalSection />
       <EventGlimpses />
       <AlumniCorner />
       <Footer />

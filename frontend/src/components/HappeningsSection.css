@@ -6,17 +6,23 @@
 .happenings-container {
   max-width: 1400px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .happenings-container h2 {
-  font-size: 3rem;
+  font-size: 3.5rem;
   font-weight: 900;
-  margin-bottom: 3rem;
-  color: #000;
-  text-decoration: underline;
-  text-decoration-color: #3b82f6;
-  text-decoration-thickness: 4px;
-  text-underline-offset: 8px;
+  margin: 0 auto 3rem;
+  color: #ffffff;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  padding: 25px 50px;
+  display: inline-block;
+  background: #3b82f6;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
 }
 
 .happenings-swiper {
@@ -108,7 +114,11 @@
 
 @media (max-width: 768px) {
   .happenings-container h2 {
-    font-size: 2rem;
+    font-size: 2.5rem;
+  }
+  
+  .happenings-container h2::after {
+    width: 100px;
   }
   
   .happening-card img {
@@ -124,8 +134,14 @@
   }
   
   .happenings-container h2 {
-    font-size: 1.75rem;
+    font-size: 2rem;
     margin-bottom: 2rem;
+    letter-spacing: 1px;
+  }
+  
+  .happenings-container h2::after {
+    width: 80px;
+    height: 3px;
   }
   
   .happening-card img {

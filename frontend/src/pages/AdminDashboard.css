@@ -396,3 +396,47 @@
     padding: 30px 15px;
   }
 }
+
+/* Section Card Styles */
+.section-card {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  text-align: center;
+  background: white;
+}
+
+.section-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.section-card .item-info {
+  flex: 1;
+  margin-bottom: 1rem;
+  padding: 0;
+}
+
+.section-card .item-info h3 {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #1e293b;
+}
+
+.section-card .item-info p {
+  font-size: 0.9rem;
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.section-card .item-actions {
+  display: flex;
+  justify-content: center;
+  border-top: none;
+  padding: 0;
+}
+
+.section-card .edit-btn {
+  flex: none;
+  min-width: 120px;
+}

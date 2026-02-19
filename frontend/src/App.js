@@ -10,6 +10,7 @@ import AddGlimpse from './pages/AddGlimpse';
 import EditEvent from './pages/EditEvent';
 import EditHappening from './pages/EditHappening';
 import EditGlimpse from './pages/EditGlimpse';
+import EditSection from './pages/EditSection';
 import './App.css';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="/admin/happenings/edit/:id" element={<EditHappening />} />
           <Route path="/admin/glimpses/add" element={<AddGlimpse />} />
           <Route path="/admin/glimpses/edit/:id" element={<EditGlimpse />} />
+          <Route path="/admin/sections/edit/:sectionName" element={<EditSection />} />
         </Routes>
       </div>
     </Router>

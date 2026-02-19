@@ -12,10 +12,10 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 try:
     from backend.config import Config
-    from backend.models import db, Admin, Event, Happening, Glimpse
+    from backend.models import db, Admin, Event, Happening, Glimpse, SectionContent
 except ImportError:
     from config import Config
-    from models import db, Admin, Event, Happening, Glimpse
+    from models import db, Admin, Event, Happening, Glimpse, SectionContent
 
 # Initialize Flask API application
 # Set static folder to serve React build
@@ -639,6 +639,59 @@ def update_glimpse(glimpse_id):
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
 
+# ============= SECTION CONTENT API =============
+
+# Get section content by name
+@app.route('/api/sections/<section_name>', methods=['GET'])
+def get_section_content(section_name):
+    try:
+        section = SectionContent.query.filter_by(section_name=section_name, is_active=True).first()
+        if not section:
+            return jsonify({'error': 'Section not found'}), 404
+        return jsonify(section.to_dict()), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Get all sections
+@app.route('/api/sections', methods=['GET'])
+def get_all_sections():
+    try:
+        sections = SectionContent.query.filter_by(is_active=True).all()
+        return jsonify([section.to_dict() for section in sections]), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+# Update section content
+@app.route('/api/admin/sections/<section_name>', methods=['PUT'])
+def update_section_content(section_name):
+    try:
+        import json
+        data = request.get_json()
+        content = data.get('content')
+        
+        if not content:
+            return jsonify({'error': 'Content is required'}), 400
+        
+        section = SectionContent.query.filter_by(section_name=section_name).first()
+        
+        if section:
+            # Update existing section
+            section.content_json = json.dumps(content)
+            section.updated_at = datetime.utcnow()
+        else:
+            # Create new section
+            section = SectionContent(
+                section_name=section_name,
+                content_json=json.dumps(content)
+            )
+            db.session.add(section)
+        
+        db.session.commit()
+        return jsonify({'message': 'Section updated successfully', 'section': section.to_dict()}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
 # Database initialization
 try:
     with app.app_context():
@@ -722,6 +775,77 @@ try:
             print('✅ Admin user created (username: admin, password: admin123)')
         else:
             print('✅ Admin user already exists')
+        
+        # Initialize default section content if not exists
+        import json
+        
+        default_sections = {
+            'hero': {
+                'badge_text': 'ADMISSIONS 2026 OPEN',
+                'title_white': 'ADMISSIONS',
+                'title_green': 'OPEN 2026',
+                'description': "Join Haridwar University, Uttarakhand's premier destination for future leaders. Experience state-of-the-art infrastructure and India's leading placement ecosystem with 100% career support.",
+                'apply_now_link': 'https://huroorkee.ac.in/apply-now',
+                'campus_tour_link': 'https://huroorkee.ac.in/student-corner/photo-gallery',
+                'video_url': 'https://www.youtube.com/embed/blzl5ee5GSU',
+                'fallback_image': '/images/hero-fallback.avif',
+                'logo_image': '/images/logo.jpeg'
+            },
+            'about': {
+                'title': 'Ignite the Intellect. Lead the Legacy.',
+                'description': 'Haridwar University is a multi-disciplinary, research-intensive, private university, educating a vibrant and innovative student and very strong supportive faculty members. Haridwar University offers UG and PG programs across various disciplines, including Engineering, Management, Medical Sciences, Life Sciences, Agricultural Sciences.',
+                'know_more_link': 'https://huroorkee.ac.in/about-us',
+                'stats': [
+                    {'number': '50+', 'label': 'Research Projects', 'image': '/images/gueston14.jpeg'},
+                    {'number': '140+', 'label': 'Publications', 'icon': '📚'},
+                    {'number': '10+', 'label': 'Patents', 'image': '/images/toy.avif'},
+                    {'label': 'WORLD RECOGNIZED RESEARCH AND INNOVATION', 'icon': '🔬'}
+                ]
+            },
+            'why': {
+                'title': 'Why Haridwar University?',
+                'description': 'Discover Haridwar University, where endless opportunities await. With a commitment to excellence, we nurture talent, empower minds, and shape futures. Choose us for a brighter tomorrow. Our consistent rankings in various categories by TIMES OF INDIA Ranking Survey demonstrate our dedication to providing quality education and ensuring successful careers for our students. Join us to be part of an institution that stands among the top engineering institutes in India.',
+                'reasons': [
+                    {'id': '01', 'title': 'National Ranking', 'subtitle': 'Ranked 92nd in Best Universities of India by TIMES OF INDIA Ranking Survey 2025.', 'image': '/images/Roorkee-College-of-Smart-Computing.avif'},
+                    {'id': '02', 'title': 'TOP India University Ranking', 'subtitle': '', 'image': '/images/Why_Roorkee_College_of_Engineering.avif'},
+                    {'id': '03', 'title': 'Placement Success', 'subtitle': '', 'image': '/images/business_studies1.avif'},
+                    {'id': '04', 'title': 'Engineering Excellence', 'subtitle': '', 'image': '/images/SmartComputing.avif'},
+                    {'id': '05', 'title': 'Best University Ranking', 'subtitle': '', 'image': '/images/young-asian-indian-college-students-2025-03-14-03-09-58-utc.avif'}
+                ]
+            },
+            'utkarsh': {
+                'title': 'The biggest festival for HUians',
+                'subtitle': 'Celebrating excellence, passion, and innovation through our flagship events',
+                'background_video': 'https://www.youtube.com/embed/FvFEYVSantk',
+                'background_image': '/images/cultural.jpeg',
+                'fests': [
+                    {'name': 'UTkarsh', 'category': 'Cultural Fest', 'description': 'Experience the vibrant cultural extravaganza showcasing talent, creativity, and artistic excellence from across the nation.', 'color': '#FF6B6B', 'video_id': None, 'image_url': '/images/cultural.jpeg'},
+                    {'name': 'Krida', 'category': 'Sports Fest', 'description': 'Witness the spirit of sportsmanship and athletic prowess as teams compete in thrilling tournaments and championships.', 'color': '#4ECDC4', 'video_id': 'QoUjgq-U5IE', 'image_url': None},
+                    {'name': 'Tech Sangram', 'category': 'Technical Fest', 'description': 'Dive into innovation and technology with hackathons, workshops, and competitions that push the boundaries of engineering.', 'color': '#95E1D3', 'video_id': None, 'image_url': None}
+                ]
+            },
+            'technical': {
+                'title': 'Technical and Innovation Activities',
+                'activities': [
+                    {'title': 'Hackathons', 'description': 'Participate in coding marathons and build innovative solutions to real-world problems.', 'image': '/images/placeholder.jpg'},
+                    {'title': 'Workshops', 'description': 'Learn cutting-edge technologies through hands-on workshops conducted by industry experts.', 'image': '/images/placeholder.jpg'},
+                    {'title': 'Innovation Labs', 'description': 'Access state-of-the-art facilities to bring your innovative ideas to life.', 'image': '/images/placeholder.jpg'},
+                    {'title': 'Tech Talks', 'description': 'Attend seminars and talks by leading professionals from the tech industry.', 'image': '/images/placeholder.jpg'}
+                ]
+            }
+        }
+        
+        for section_name, content in default_sections.items():
+            existing = SectionContent.query.filter_by(section_name=section_name).first()
+            if not existing:
+                section = SectionContent(
+                    section_name=section_name,
+                    content_json=json.dumps(content)
+                )
+                db.session.add(section)
+        
+        db.session.commit()
+        print('✅ Default section content initialized')
             
 except Exception as e:
     print(f'❌ Database initialization error: {e}')

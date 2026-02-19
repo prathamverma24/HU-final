@@ -102,3 +102,26 @@ class Glimpse(db.Model):
             'hashtags': self.hashtags,
             'is_active': self.is_active
         }
+
+# SectionContent Model - Stores editable content for various website sections
+class SectionContent(db.Model):
+    """
+    SectionContent model for managing editable sections of the website
+    Table: section_content
+    """
+    id = db.Column(db.Integer, primary_key=True)
+    section_name = db.Column(db.String(100), unique=True, nullable=False)  # e.g., 'hero', 'about', 'why'
+    content_json = db.Column(db.Text, nullable=False)  # JSON string containing section data
+    is_active = db.Column(db.Boolean, default=True)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    def to_dict(self):
+        """Convert section content to dictionary"""
+        import json
+        return {
+            'id': self.id,
+            'section_name': self.section_name,
+            'content': json.loads(self.content_json),
+            'is_active': self.is_active,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
+        }

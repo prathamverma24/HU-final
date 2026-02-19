@@ -179,4 +179,20 @@ export const updateGlimpse = async (glimpseId, formData) => {
   return response.data;
 };
 
+// Section Content API
+export const getSectionContent = async (sectionName) => {
+  const response = await api.get(`/sections/${sectionName}`);
+  return response.data;
+};
+
+export const getAllSections = async () => {
+  const response = await api.get('/sections');
+  return response.data;
+};
+
+export const updateSectionContent = async (sectionName, content) => {
+  const response = await api.put(`/admin/sections/${sectionName}`, { content });
+  return response.data;
+};
+
 export default api;

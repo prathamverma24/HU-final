@@ -138,6 +138,70 @@ function AdminDashboard() {
       </div>
       
       <div className="dashboard-content">
+        {/* Section Management */}
+        <div className="dashboard-section">
+          <div className="section-header">
+            <h2>🎨 Website Sections</h2>
+          </div>
+          
+          <div className="items-grid">
+            <div className="item-card section-card">
+              <div className="section-icon">🏠</div>
+              <div className="item-info">
+                <h3>Hero Section</h3>
+                <p>Edit main banner, title, and call-to-action buttons</p>
+              </div>
+              <div className="item-actions">
+                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/hero')}>Edit</button>
+              </div>
+            </div>
+
+            <div className="item-card section-card">
+              <div className="section-icon">ℹ️</div>
+              <div className="item-info">
+                <h3>About Section</h3>
+                <p>Edit about text, stats, and research information</p>
+              </div>
+              <div className="item-actions">
+                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/about')}>Edit</button>
+              </div>
+            </div>
+
+            <div className="item-card section-card">
+              <div className="section-icon">⭐</div>
+              <div className="item-info">
+                <h3>Why Section</h3>
+                <p>Edit reasons to choose Haridwar University</p>
+              </div>
+              <div className="item-actions">
+                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/why')}>Edit</button>
+              </div>
+            </div>
+
+            <div className="item-card section-card">
+              <div className="section-icon">🎉</div>
+              <div className="item-info">
+                <h3>Utkarsh Section</h3>
+                <p>Edit festival information and fest cards</p>
+              </div>
+              <div className="item-actions">
+                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/utkarsh')}>Edit</button>
+              </div>
+            </div>
+
+            <div className="item-card section-card">
+              <div className="section-icon">💡</div>
+              <div className="item-info">
+                <h3>Technical Section</h3>
+                <p>Edit technical activities and innovation content</p>
+              </div>
+              <div className="item-actions">
+                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/technical')}>Edit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Events Management Section */}
         <div className="dashboard-section">
           <div className="section-header">

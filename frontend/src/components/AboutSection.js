@@ -1,42 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { getSectionContent } from '../services/api';
 import './AboutSection.css';
 
 function AboutSection() {
+  const [content, setContent] = useState({
+    title: 'Ignite the Intellect. Lead the Legacy.',
+    description: 'Haridwar University is a multi-disciplinary, research-intensive, private university...',
+    know_more_link: 'https://huroorkee.ac.in/about-us',
+    stats: []
+  });
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const data = await getSectionContent('about');
+        setContent(data.content);
+      } catch (error) {
+        console.error('Error fetching about content:', error);
+      }
+    };
+    fetchContent();
+  }, []);
+
   return (
     <section id="about" className="about-section">
       <div className="about-container">
         <div className="about-grid">
           <div className="about-text">
-            <h2>Ignite the Intellect. Lead the Legacy.</h2>
-            <p>Haridwar University is a multi-disciplinary, research-intensive, private university, educating a vibrant and innovative student and very strong supportive faculty members. Haridwar University offers UG and PG programs across various disciplines, including Engineering, Management, Medical Sciences, Life Sciences, Agricultural Sciences.</p>
-            <a href="https://huroorkee.ac.in/about-us" target="_blank" rel="noopener noreferrer" className="know-more-link">
+            <h2>{content.title}</h2>
+            <p>{content.description}</p>
+            <a href={content.know_more_link} target="_blank" rel="noopener noreferrer" className="know-more-link">
               <span>↗</span> Know More
             </a>
           </div>
           <div className="stats-grid">
-            <div className="stat-card with-image">
-              <img src="/images/gueston14.jpeg" alt="Research Projects" />
-              <div className="stat-overlay">
-                <div className="stat-number">50+</div>
-                <div className="stat-label">Research Projects</div>
+            {content.stats && content.stats.map((stat, index) => (
+              <div key={index} className={`stat-card ${stat.image ? 'with-image' : 'dark'} ${stat.label === 'WORLD RECOGNIZED RESEARCH AND INNOVATION' ? 'innovation' : ''}`}>
+                {stat.image && <img src={stat.image} alt={stat.label} />}
+                <div className={stat.image ? 'stat-overlay' : ''}>
+                  {stat.number && <div className="stat-number">{stat.number}</div>}
+                  <div className={stat.number ? 'stat-label' : 'stat-label-main'}>{stat.label}</div>
+                  {stat.icon && <div className={stat.number ? 'stat-icon' : 'stat-icon-bottom'}>{stat.icon}</div>}
+                </div>
               </div>
-            </div>
-            <div className="stat-card dark">
-              <div className="stat-number">140+</div>
-              <div className="stat-label">Publications</div>
-              <div className="stat-icon">📚</div>
-            </div>
-            <div className="stat-card with-image">
-              <img src="/images/toy.avif" alt="Patents" />
-              <div className="stat-overlay">
-                <div className="stat-number">10+</div>
-                <div className="stat-label">Patents</div>
-              </div>
-            </div>
-            <div className="stat-card dark innovation">
-              <div className="stat-label-main">WORLD RECOGNIZED RESEARCH AND INNOVATION</div>
-              <div className="stat-icon-bottom">🔬</div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

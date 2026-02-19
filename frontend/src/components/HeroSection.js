@@ -1,21 +1,45 @@
 import React, { useState, useEffect } from 'react';
+import { getSectionContent } from '../services/api';
 import './HeroSection.css';
 
 function HeroSection() {
   const [videoLoaded, setVideoLoaded] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [content, setContent] = useState({
+    badge_text: 'ADMISSIONS 2026 OPEN',
+    title_white: 'ADMISSIONS',
+    title_green: 'OPEN 2026',
+    description: "Join Haridwar University, Uttarakhand's premier destination for future leaders.",
+    apply_now_link: 'https://huroorkee.ac.in/apply-now',
+    campus_tour_link: 'https://huroorkee.ac.in/student-corner/photo-gallery',
+    video_url: 'https://www.youtube.com/embed/blzl5ee5GSU',
+    fallback_image: '/images/hero-fallback.avif',
+    logo_image: '/images/logo.jpeg'
+  });
 
   useEffect(() => {
+    // Fetch section content from API
+    const fetchContent = async () => {
+      try {
+        const data = await getSectionContent('hero');
+        setContent(data.content);
+      } catch (error) {
+        console.error('Error fetching hero content:', error);
+        // Keep default content if fetch fails
+      }
+    };
+    fetchContent();
+
     // Preload the fallback image
     const img = new Image();
-    img.src = '/images/hero-fallback.avif';
+    img.src = content.fallback_image;
     img.onload = () => setImageLoaded(true);
 
     // Keep fallback image for 5 seconds before showing video
     const timer = setTimeout(() => {
       setVideoLoaded(true);
-    }, 5000); // Show fallback for exactly 5 seconds
+    }, 5000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -39,13 +63,13 @@ function HeroSection() {
 
       {/* Fallback Background Image */}
       <div className={`fallback-background ${videoLoaded ? 'fade-out' : ''} ${imageLoaded ? 'loaded' : ''}`}>
-        <img src="/images/hero-fallback.avif" alt="Haridwar University" />
+        <img src={content.fallback_image} alt="Haridwar University" />
       </div>
 
       {/* Video Background */}
       <div className={`video-background ${videoLoaded ? 'fade-in' : ''}`}>
         <iframe
-          src="https://www.youtube.com/embed/blzl5ee5GSU?autoplay=1&mute=1&loop=1&playlist=blzl5ee5GSU&controls=0&modestbranding=1&fs=0"
+          src={`${content.video_url}?autoplay=1&mute=1&loop=1&playlist=${content.video_url.split('/').pop()}&controls=0&modestbranding=1&fs=0`}
           allow="autoplay; muted"
           title="Hero Video"
         />
@@ -53,7 +77,7 @@ function HeroSection() {
 
       {/* Logo */}
       <div className="hero-logo">
-        <img src="/images/logo.jpeg" alt="Haridwar University Logo" />
+        <img src={content.logo_image} alt="Haridwar University Logo" />
       </div>
 
       {/* Mobile Menu Toggle Button */}
@@ -71,7 +95,7 @@ function HeroSection() {
       <div className="hero-nav-buttons desktop-nav">
         <a href="#about" className="nav-btn">About Us</a>
         <a href="#programs" className="nav-btn">Programs</a>
-        <a href="https://huroorkee.ac.in/apply-now" target="_blank" rel="noopener noreferrer" className="nav-btn primary">
+        <a href={content.apply_now_link} target="_blank" rel="noopener noreferrer" className="nav-btn primary">
           Register Now
         </a>
       </div>
@@ -94,7 +118,7 @@ function HeroSection() {
             Programs
           </a>
           <a 
-            href="https://huroorkee.ac.in/apply-now" 
+            href={content.apply_now_link}
             target="_blank" 
             rel="noopener noreferrer" 
             className="mobile-nav-link primary"
@@ -112,29 +136,29 @@ function HeroSection() {
           {/* Admissions Badge */}
           <div className="admissions-badge">
             <span className="badge-icon">✦</span>
-            <span className="badge-text">ADMISSIONS 2026 OPEN</span>
+            <span className="badge-text">{content.badge_text}</span>
           </div>
 
           {/* Main Heading */}
           <div className="hero-title-wrapper">
             <h1 className="hero-main-title">
-              <span className="title-white">ADMISSIONS</span>
-              <span className="title-green">OPEN 2026</span>
+              <span className="title-white">{content.title_white}</span>
+              <span className="title-green">{content.title_green}</span>
             </h1>
           </div>
 
           {/* Description */}
           <p className="hero-description">
-            Join Haridwar University, Uttarakhand's premier destination for future leaders. Experience state-of-the-art infrastructure and India's leading placement ecosystem with 100% career support.
+            {content.description}
           </p>
 
           {/* Action Buttons */}
           <div className="hero-buttons">
-            <a href="https://huroorkee.ac.in/apply-now" target="_blank" rel="noopener noreferrer" className="hero-btn apply-now-btn">
+            <a href={content.apply_now_link} target="_blank" rel="noopener noreferrer" className="hero-btn apply-now-btn">
               APPLY NOW
               <span className="btn-arrow">→</span>
             </a>
-            <a href="https://huroorkee.ac.in/student-corner/photo-gallery" target="_blank" rel="noopener noreferrer" className="hero-btn campus-tour-btn">
+            <a href={content.campus_tour_link} target="_blank" rel="noopener noreferrer" className="hero-btn campus-tour-btn">
               CAMPUS TOUR
             </a>
           </div>
