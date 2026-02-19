@@ -2,19 +2,20 @@
 
 WORKDIR /app
 
-# Install minimal system deps (libpq5 is the runtime library for psycopg2-binary)
+# Install system dependencies for psycopg2-binary
 RUN apt-get update && apt-get install -y \
     libpq5 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY backend/ /app/
-
+# Copy backend files
+COPY backend/requirements.txt .
 RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY backend/ .
+
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8080
 
 EXPOSE 8080
 
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:8080", "app:app"]
+CMD gunicorn -w 4 -b 0.0.0.0:$PORT app:app
