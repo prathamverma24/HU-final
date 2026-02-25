@@ -90,8 +90,14 @@
   font-size: 0.875rem;
 }
 
-.footer-links span {
+.footer-links a {
   color: #9ca3af;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover {
+  color: #d1d5db;
 }
 
 .admin-btn {

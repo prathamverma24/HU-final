@@ -2,6 +2,82 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Footer.css';
 
+const footerColumns = {
+  about: [
+    { label: 'Rankings', href: 'https://huroorkee.ac.in' },
+    { label: 'Accreditation', href: 'https://huroorkee.ac.in' },
+    { label: 'Leadership', href: 'https://huroorkee.ac.in' },
+    { label: 'Press Media', href: 'https://huroorkee.ac.in' },
+    { label: 'Governance', href: 'https://huroorkee.ac.in' }
+  ],
+  interest: [
+    { label: 'Agriculture', href: '/#programs' },
+    { label: 'Commerce', href: '/#programs' },
+    { label: 'Architecture', href: '/#programs' },
+    { label: 'Artificial Intelligence', href: '/#programs' },
+    { label: 'AI and Data Science', href: '/#programs' },
+    { label: 'Allied Health Sciences', href: '/#programs' },
+    { label: 'Ayurveda', href: '/#programs' },
+    { label: 'Cyber Security', href: '/#programs' },
+    { label: 'Business', href: '/#programs' },
+    { label: 'Computing', href: '/#programs' },
+    { label: 'Engineering', href: '/#programs' },
+    { label: 'Medicine', href: '/#programs' },
+    { label: 'Nursing', href: '/#programs' },
+    { label: 'Pharmacy', href: '/#programs' }
+  ],
+  research: [
+    { label: 'Centers', href: 'https://huroorkee.ac.in' },
+    { label: 'Google Scholar', href: 'https://scholar.google.com' },
+    { label: 'News', href: 'https://huroorkee.ac.in' },
+    { label: 'Patents', href: 'https://huroorkee.ac.in' },
+    { label: 'Projects', href: 'https://huroorkee.ac.in' },
+    { label: 'Publications', href: 'https://huroorkee.ac.in' }
+  ],
+  quickLinks: [
+    { label: 'Apply Now', href: 'https://huroorkee.ac.in/apply-now' },
+    { label: 'Maps & Direction', href: 'https://maps.google.com/?q=Haridwar+University+Roorkee' },
+    { label: 'Anti Ragging', href: 'https://huroorkee.ac.in' },
+    { label: 'Outreach', href: 'https://huroorkee.ac.in' },
+    { label: 'News', href: 'https://huroorkee.ac.in' },
+    { label: 'Events', href: '/#events' },
+    { label: 'Jobs', href: 'https://huroorkee.ac.in' },
+    { label: 'Contact', href: '/contact' }
+  ],
+  programs: [
+    { label: 'Undergraduate', href: '/#programs' },
+    { label: 'Postgraduate', href: '/#programs' },
+    { label: 'International', href: '/#programs' },
+    { label: 'Certificate Courses', href: '/#programs' }
+  ],
+  legal: [
+    { label: 'Privacy Policy', href: 'https://huroorkee.ac.in' },
+    { label: 'Terms & Conditions', href: 'https://huroorkee.ac.in' },
+    { label: 'Sitemap', href: 'https://huroorkee.ac.in/sitemap_index.xml' }
+  ]
+};
+
+function FooterList({ items }) {
+  return (
+    <ul>
+      {items.map((item) => {
+        const isExternal = item.href.startsWith('http');
+        return (
+          <li key={item.label}>
+            <a
+              href={item.href}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
 function Footer() {
   return (
     <footer className="footer">
@@ -14,74 +90,31 @@ function Footer() {
               <img src="/images/logo.jpeg" alt="Haridwar University" />
             </div>
             <h4>ABOUT Haridwar University</h4>
-            <ul>
-              <li>Rankings</li>
-              <li>Accreditation</li>
-              <li>Leadership</li>
-              <li>Press Media</li>
-              <li>Governance</li>
-            </ul>
+            <FooterList items={footerColumns.about} />
           </div>
 
           {/* Interest Column */}
           <div className="footer-column">
             <h4><span className="accent-bar"></span>INTEREST</h4>
-            <ul>
-              <li>Agriculture</li>
-              <li>Commerce</li>
-              <li>Architecture</li>
-              <li>Artificial Intelligence</li>
-              <li>AI and Data Science</li>
-              <li>Allied Health Sciences</li>
-              <li>Ayurveda</li>
-              <li>Cyber Security</li>
-              <li>Business</li>
-              <li>Computing</li>
-              <li>Engineering</li>
-              <li>Medicine</li>
-              <li>Nursing</li>
-              <li>Pharmacy</li>
-            </ul>
+            <FooterList items={footerColumns.interest} />
           </div>
 
           {/* Research Column */}
           <div className="footer-column">
             <h4><span className="accent-bar"></span>RESEARCH</h4>
-            <ul>
-              <li>Centers</li>
-              <li>Google Scholar</li>
-              <li>News</li>
-              <li>Patents</li>
-              <li>Projects</li>
-              <li>Publications</li>
-            </ul>
+            <FooterList items={footerColumns.research} />
           </div>
 
           {/* Quick Links Column */}
           <div className="footer-column">
             <h4><span className="accent-bar"></span>QUICK LINKS</h4>
-            <ul>
-              <li>Apply Now</li>
-              <li>Maps & Direction</li>
-              <li>Anti Ragging</li>
-              <li>Outreach</li>
-              <li>News</li>
-              <li>Events</li>
-              <li>Jobs</li>
-              <li>Contact</li>
-              <li><Link to="/admin/login">Admin Login</Link></li>
-            </ul>
+            <FooterList items={footerColumns.quickLinks} />
           </div>
 
           {/* Programs Column */}
           <div className="footer-column">
             <h4><span className="accent-bar"></span>PROGRAMS</h4>
-            <ul>
-              <li>Undergraduate</li>
-              <li>Postgraduate</li>
-              <li>International</li>
-              <li>Certificate Courses</li>
-            </ul>
+            <FooterList items={footerColumns.programs} />
           </div>
         </div>
 
@@ -89,9 +122,11 @@ function Footer() {
         <div className="footer-bottom">
           <p>&copy; 2026 Haridwar University. All rights reserved.</p>
           <div className="footer-links">
-            <span>Privacy Policy</span>
-            <span>Terms & Conditions</span>
-            <span>Sitemap</span>
+            {footerColumns.legal.map((item) => (
+              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer">
+                {item.label}
+              </a>
+            ))}
           </div>
           <Link to="/admin/login" className="admin-btn">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
