@@ -2,26 +2,38 @@
 
 WORKDIR /app
 
-# Install PostgreSQL client libraries
-RUN apt-get update && apt-get install -y \
+# Install system dependencies including PostgreSQL client and dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libpq-dev \
+    postgresql-client \
     gcc \
+    g++ \
+    make \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements from backend and install
-COPY backend/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy requirements and install Python dependencies  
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
-# Copy application files from backend
-COPY backend/app.py backend/api.py backend/models.py backend/config.py backend/wsgi.py ./
-COPY backend/static ./static
+# Copy application files
+COPY app.py config.py models.py wsgi.py ./
+COPY static ./static
 
-# Create instance directory
-RUN mkdir -p instance
+# Create instance directory for database
+RUN mkdir -p instance logs
 
-ENV PYTHONUNBUFFERED=1
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PORT=8080
 
 EXPOSE 8080
 
-CMD gunicorn app:app --bind 0.0.0.0:$PORT
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/api/health')" || exit 1
+
+# Use gunicorn to run the app with proper worker configuration
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:8080", "--workers", "2", "--worker-class", "sync", "--timeout", "120", "--max-requests", "100", "--max-requests-jitter", "10"]
