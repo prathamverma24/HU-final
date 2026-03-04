@@ -63,38 +63,44 @@ def allowed_file(filename):
 def convert_youtube_url_to_embed(url):
     """
     Convert any YouTube URL format to embed format
-    Handles: youtu.be, youtube.com/watch, m.youtube.com/watch, etc.
+    Handles: youtu.be, youtube.com/watch, m.youtube.com/watch,
+    youtube.com/shorts, youtube.com/live, youtube.com/embed, etc.
     """
     if not url:
         return url
-    
-    # Already in embed format
-    if 'youtube.com/embed/' in url:
-        return url
-    
+
     import re
-    
-    # Extract video ID from different formats
+
+    cleaned_url = url.strip()
+
+    # Accept many YouTube URL variants and normalize to one clean embed URL.
+    patterns = [
+        r'youtu\.be/([a-zA-Z0-9_-]{11})',
+        r'youtube\.com/embed/([a-zA-Z0-9_-]{11})',
+        r'youtube\.com/watch\?.*?[?&]v=([a-zA-Z0-9_-]{11})',
+        r'm\.youtube\.com/watch\?.*?[?&]v=([a-zA-Z0-9_-]{11})',
+        r'youtube\.com/shorts/([a-zA-Z0-9_-]{11})',
+        r'youtube\.com/live/([a-zA-Z0-9_-]{11})',
+    ]
+
     video_id = None
-    
-    # Format: https://youtu.be/VIDEO_ID
-    if 'youtu.be/' in url:
-        match = re.search(r'youtu\.be/([a-zA-Z0-9_-]+)', url)
+    for pattern in patterns:
+        match = re.search(pattern, cleaned_url)
         if match:
             video_id = match.group(1)
-    
-    # Format: https://www.youtube.com/watch?v=VIDEO_ID or https://youtube.com/watch?v=VIDEO_ID
-    elif 'youtube.com/watch' in url or 'm.youtube.com/watch' in url:
-        match = re.search(r'[?&]v=([a-zA-Z0-9_-]+)', url)
+            break
+
+    # Fallback: catch v=... even if URL is oddly structured.
+    if not video_id:
+        match = re.search(r'[?&]v=([a-zA-Z0-9_-]{11})', cleaned_url)
         if match:
             video_id = match.group(1)
-    
-    # If we found a video ID, return embed URL
+
     if video_id:
         return f'https://www.youtube.com/embed/{video_id}'
-    
-    # Return original if we couldn't parse it
-    return url
+
+    # If this isn't parseable as YouTube, preserve original for validation upstream/UI.
+    return cleaned_url
 
 # ============= API ROUTES =============
 
@@ -703,7 +709,7 @@ try:
             print("Using PostgreSQL database - creating tables with correct schema...")
             # For PostgreSQL, just create all tables (they'll have the correct schema)
             db.create_all()
-            print("✅ PostgreSQL tables created successfully")
+            print("[OK] PostgreSQL tables created successfully")
         else:
             # SQLite migration logic
             import sqlite3
@@ -750,12 +756,12 @@ try:
                                 cursor.execute("DROP TABLE glimpse")
                                 cursor.execute("ALTER TABLE glimpse_new RENAME TO glimpse")
                                 conn.commit()
-                                print("✅ Migration completed! image_path is now nullable.")
+                                print("[OK] Migration completed! image_path is now nullable.")
                             except Exception as migration_error:
-                                print(f"❌ Migration failed: {migration_error}")
+                                print(f"[ERROR] Migration failed: {migration_error}")
                                 conn.rollback()
                         else:
-                            print("✅ image_path is already nullable. No migration needed.")
+                            print("[OK] image_path is already nullable. No migration needed.")
                 else:
                     print("Glimpse table doesn't exist yet. Will be created with correct schema.")
                 
@@ -772,9 +778,9 @@ try:
             admin.set_password('admin123')
             db.session.add(admin)
             db.session.commit()
-            print('✅ Admin user created (username: admin, password: admin123)')
+            print('[OK] Admin user created (username: admin, password: admin123)')
         else:
-            print('✅ Admin user already exists')
+            print('[OK] Admin user already exists')
         
         # Initialize default section content if not exists
         import json
@@ -817,7 +823,7 @@ try:
                 'title': 'The biggest festival for HUians',
                 'subtitle': 'Celebrating excellence, passion, and innovation through our flagship events',
                 'background_video': 'https://www.youtube.com/embed/FvFEYVSantk',
-                'background_image': '/images/cultural.jpeg',
+                'background_image': '',
                 'fests': [
                     {'name': 'UTkarsh', 'category': 'Cultural Fest', 'description': 'Experience the vibrant cultural extravaganza showcasing talent, creativity, and artistic excellence from across the nation.', 'color': '#FF6B6B', 'video_id': None, 'image_url': '/images/cultural.jpeg'},
                     {'name': 'Krida', 'category': 'Sports Fest', 'description': 'Witness the spirit of sportsmanship and athletic prowess as teams compete in thrilling tournaments and championships.', 'color': '#4ECDC4', 'video_id': 'QoUjgq-U5IE', 'image_url': None},
@@ -845,10 +851,10 @@ try:
                 db.session.add(section)
         
         db.session.commit()
-        print('✅ Default section content initialized')
+        print('[OK] Default section content initialized')
             
 except Exception as e:
-    print(f'❌ Database initialization error: {e}')
+    print(f'[ERROR] Database initialization error: {e}')
     import traceback
     traceback.print_exc()
 

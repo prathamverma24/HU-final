@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addHappening } from '../services/api';
+import AdminNavbar from '../components/AdminNavbar';
 import './AddContent.css';
 
 function AddHappening() {
@@ -16,7 +17,7 @@ function AddHappening() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -25,12 +26,11 @@ function AddHappening() {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         image: file
       }));
-      
-      // Create preview
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result);
@@ -54,7 +54,7 @@ function AddHappening() {
 
       const response = await addHappening(formDataToSend);
       console.log('Happening added:', response);
-      
+
       alert('Happening added successfully!');
       navigate('/admin/dashboard');
     } catch (err) {
@@ -69,10 +69,7 @@ function AddHappening() {
     <div className="add-content-page">
       <div className="add-content-container">
         <div className="page-header">
-          <button onClick={() => navigate('/admin/dashboard')} className="back-btn">
-            ← Back to Dashboard
-          </button>
-          <h1>📰 Add New Happening</h1>
+          <AdminNavbar title="Add New Happening" />
         </div>
 
         <form onSubmit={handleSubmit} className="content-form">

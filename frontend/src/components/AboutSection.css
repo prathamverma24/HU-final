@@ -1,6 +1,9 @@
 .about-section {
-  padding: 4rem 2rem;
-  background: white;
+  padding: 5rem 2rem;
+  background:
+    radial-gradient(circle at 8% 14%, rgba(8, 145, 178, 0.1), transparent 36%),
+    radial-gradient(circle at 92% 86%, rgba(37, 99, 235, 0.1), transparent 38%),
+    #f8fafc;
   position: relative;
   overflow: hidden;
 }
@@ -14,205 +17,211 @@
 
 .about-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr 1.1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+.about-text {
+  opacity: 0;
+  transform: translateY(34px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.about-stats-grid .about-stat-card {
+  opacity: 0;
+  transform: translateY(26px) scale(0.98);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+
+.about-section.is-visible .about-text {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.about-section.is-visible .about-stats-grid .about-stat-card {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.about-kicker {
+  display: inline-flex;
   align-items: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 9999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.2rem;
 }
 
 .about-text h2 {
-  font-size: 3.5rem;
+  font-size: clamp(2rem, 4.5vw, 3.6rem);
   font-weight: 900;
-  margin-bottom: 1.5rem;
-  color: #000;
-  line-height: 1.1;
+  margin-bottom: 1.3rem;
+  color: #0f172a;
+  line-height: 1.08;
   font-family: 'Arial Black', sans-serif;
 }
 
 .about-text p {
-  font-size: 1rem;
-  color: #1f2937;
-  line-height: 1.8;
-  margin-bottom: 1.5rem;
+  font-size: 1.06rem;
+  color: #334155;
+  line-height: 1.75;
+  margin-bottom: 1.8rem;
+  max-width: 640px;
 }
 
 .know-more-link {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  color: #000;
-  font-weight: 700;
+  gap: 0.55rem;
+  color: #0f172a;
+  font-weight: 800;
   text-decoration: none;
-  transition: gap 0.3s;
-  font-size: 1.1rem;
+  transition: gap 0.25s ease, color 0.25s ease;
+  font-size: 1rem;
 }
 
 .know-more-link span {
-  font-size: 1.2rem;
+  font-size: 1.15rem;
 }
 
 .know-more-link:hover {
-  gap: 1rem;
+  gap: 0.95rem;
+  color: #1d4ed8;
 }
 
-.stats-grid {
+.about-stats-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
 }
 
-.stat-card {
-  position: relative;
-  border-radius: 1.5rem;
-  padding: 2rem;
-  min-height: 200px;
+.about-stat-card {
+  border-radius: 18px;
   overflow: hidden;
-  transition: transform 0.3s;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #0f172a;
+  min-height: 250px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
 }
 
-.stat-card:hover {
-  transform: scale(1.02);
+.about-stat-media {
+  position: relative;
+  height: 150px;
+  overflow: hidden;
 }
 
-.stat-card.with-image {
-  background: #1f2937;
-}
-
-.stat-card.with-image img {
-  position: absolute;
-  top: 0;
-  left: 0;
+.about-stat-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  opacity: 0.7;
   display: block;
+  transform: scale(1.02);
+  transition: transform 0.45s ease;
 }
 
-.stat-card.dark {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: white;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+.about-stat-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.08) 0%, rgba(15, 23, 42, 0.58) 100%);
 }
 
-.stat-card.innovation {
-  background: linear-gradient(135deg, #f9fafb 0%, #e5e7eb 100%);
-  color: #000;
-  justify-content: space-between;
-  padding: 1.5rem;
+.about-stat-content {
+  padding: 0.95rem 1.05rem 1.05rem;
+  color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.stat-overlay {
-  position: relative;
-  z-index: 1;
-  color: white;
-}
-
-.stat-number {
-  font-size: 3.5rem;
+.about-stat-number {
+  font-size: 2.2rem;
   font-weight: 900;
-  margin-bottom: 0.25rem;
-  color: white;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
-.stat-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: white;
+.about-stat-label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.95);
 }
 
-.stat-icon {
-  font-size: 2.5rem;
-  margin-top: 0.5rem;
+.about-stat-icon {
+  font-size: 1.55rem;
+  line-height: 1;
 }
 
-.stat-label-main {
-  font-size: 1.5rem;
-  font-weight: 900;
-  color: #000;
-  line-height: 1.2;
-  margin-bottom: 1rem;
+.about-stat-card:hover .about-stat-media img {
+  transform: scale(1.08);
 }
 
-.stat-icon-bottom {
-  font-size: 2.5rem;
-  text-align: right;
+@media (prefers-reduced-motion: reduce) {
+  .about-text,
+  .about-stats-grid .about-stat-card {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .about-stat-media img {
+    transition: none;
+  }
 }
 
 @media (max-width: 1024px) {
   .about-grid {
     grid-template-columns: 1fr;
-  }
-  
-  .about-text h2 {
-    font-size: 2.5rem;
+    gap: 2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .stats-grid {
+  .about-section {
+    padding: 3.6rem 1.2rem;
+  }
+
+  .about-stats-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .about-text h2 {
     font-size: 2rem;
+  }
+
+  .about-text p {
+    font-size: 0.95rem;
+  }
+
+  .about-stat-card {
+    min-height: 230px;
+  }
+
+  .about-stat-media {
+    height: 138px;
   }
 }
 
-
-/* Additional mobile improvements */
 @media (max-width: 480px) {
-  .about-section {
-    padding: 3rem 1rem;
-  }
-  
-  .about-grid {
-    gap: 2rem;
-  }
-  
   .about-text h2 {
-    font-size: 1.75rem;
-    margin-bottom: 1rem;
+    font-size: 1.72rem;
   }
-  
-  .about-text p {
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+
+  .about-kicker {
+    font-size: 0.77rem;
   }
-  
-  .know-more-link {
-    font-size: 1rem;
+
+  .about-stat-number {
+    font-size: 1.9rem;
   }
-  
-  .stats-grid {
-    gap: 1rem;
-  }
-  
-  .stat-card {
-    min-height: 180px;
-    padding: 1.5rem;
-  }
-  
-  .stat-number {
-    font-size: 2.5rem;
-  }
-  
-  .stat-label {
-    font-size: 0.9rem;
-  }
-  
-  .stat-label-main {
-    font-size: 1.25rem;
-  }
-  
-  .stat-icon,
-  .stat-icon-bottom {
-    font-size: 2rem;
+
+  .about-stat-label {
+    font-size: 0.82rem;
   }
 }

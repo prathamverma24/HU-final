@@ -20,7 +20,7 @@ function SportsGallery() {
         <div className="sports-grid">
           {sports.map((sport, index) => (
             <div key={index} className="sport-card">
-              <img src={sport.image} alt={sport.name} />
+              <img src={sport.image} alt={sport.name} loading="lazy" />
               <p>{sport.name}</p>
             </div>
           ))}

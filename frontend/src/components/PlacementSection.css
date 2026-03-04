@@ -1,0 +1,86 @@
+.placement-section {
+  background: #f1f1f1;
+  padding: 3.4rem 1.4rem 3.8rem;
+}
+
+.placement-container {
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.placement-header {
+  text-align: center;
+  margin-bottom: 2.4rem;
+}
+
+.placement-header h2 {
+  margin: 0;
+  font-size: clamp(2rem, 3.2vw, 3.5rem);
+  color: #172033;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 800;
+  text-decoration: underline;
+  text-decoration-color: #0b8b95;
+  text-decoration-thickness: 4px;
+  text-underline-offset: 10px;
+}
+
+.placement-header p {
+  margin: 1.1rem 0 0;
+  color: #1e293b;
+  font-size: clamp(1.2rem, 2vw, 2rem);
+  font-style: italic;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.placement-swiper {
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 0 3rem;
+}
+
+.placement-card {
+  max-width: 560px;
+  aspect-ratio: 11 / 10;
+  margin: 0 auto;
+  border-radius: 28px;
+  overflow: hidden;
+  background: #f1f1f1;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.14);
+}
+
+.placement-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.placement-swiper .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #94a3b8;
+  opacity: 1;
+}
+
+.placement-swiper .swiper-pagination-bullet-active {
+  width: 24px;
+  border-radius: 999px;
+  background: #0b8b95;
+}
+
+@media (max-width: 768px) {
+  .placement-section {
+    padding: 3.2rem 1rem 4rem;
+  }
+
+  .placement-header {
+    margin-bottom: 1.8rem;
+  }
+
+  .placement-card {
+    max-width: 380px;
+    aspect-ratio: 4 / 3;
+  }
+}

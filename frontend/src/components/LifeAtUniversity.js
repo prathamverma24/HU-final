@@ -21,7 +21,7 @@ const galleryItems = [
   { id: 2, type: 'image', size: 'tile-standard', image: utk2Image, alt: 'Honorable Chief Guest' },
   { id: 3, type: 'image', size: 'tile-featured', image: jassiImage, alt: 'Music Concert by Jassi Gill' },
   { id: 4, type: 'image', size: 'tile-featured', image: utkarshGirlImage, alt: 'Dance Performance On Utkarsh' },
-  { id: 5, type: 'image', size: 'tile-standard', image: hardySandhuImage, alt: 'Music concert' },
+  { id: 5, type: 'image', size: 'tile-standard', image: hardySandhuImage, alt: 'Music concert by Hardy Sandhu' },
   { id: 6, type: 'image', size: 'tile-standard', image: '/images/utt.jpeg', alt: 'Traditional drummers' },
   { id: 7, type: 'image', size: 'tile-featured', image: utk1Image, alt: 'Honorable Chairman CA SK Gupta Sir' },
   { id: 8, type: 'image', size: 'tile-standard', image: taekImage, alt: 'Solo performance' },
@@ -37,7 +37,7 @@ const galleryItems = [
   { id: 12, type: 'image', size: 'tile-tall', image: utkGirl2Image, alt: 'Cultural costume close-up' },
   { id: 13, type: 'image', size: 'tile-featured', image: utk3Image, alt: 'Festival parade' },
   { id: 14, type: 'image', size: 'tile-tall', image: basketballImage, alt: 'Basketball game in Krida2k23' },
-  { id: 15, type: 'image', size: 'tile-standard', image: lab1Image, alt: 'Innovation lab' },
+  { id: 15, type: 'image', size: 'tile-tall', image: lab1Image, alt: 'Innovation lab' },
 ];
 
 function LifeAtUniversity() {
@@ -50,7 +50,7 @@ function LifeAtUniversity() {
           {galleryItems.map((item) => (
             <article
               key={item.id}
-              className={`life-tile ${item.size} ${item.type === 'text' ? 'life-tile-text' : ''}`}
+              className={`life-tile ${item.size} ${item.type === 'text' ? 'life-tile-text' : ''} ${item.id === 5 ? 'tile-id-5' : ''}`}
               role="listitem"
             >
               {item.type === 'image' ? (
@@ -75,7 +75,7 @@ function LifeAtUniversity() {
           ))}
         </div>
 
-        <a className="life-view-more" href="/life-at-university">
+        <a className="life-view-more" href="https://huroorkee.ac.in/student-corner/cultural-club">
           <span aria-hidden="true">↗</span>
           <span>View More</span>
         </a>

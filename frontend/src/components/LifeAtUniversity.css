@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=Teko:wght@500;600;700&display=swap');
+
+.life-at-university {
+  background: #ececec;
+  padding: 78px 22px 70px;
+}
+
+.life-container {
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.life-title {
+  margin: 0 0 34px;
+  font-family: 'Anton', 'Barlow Condensed', 'Teko', sans-serif;
+  font-size: clamp(2.2rem, 5.2vw, 4rem);
+  line-height: 0.95;
+  letter-spacing: 0.5px;
+  color: #111111;
+}
+
+.life-gallery {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-auto-rows: 196px;
+  gap: 12px;
+  grid-auto-flow: row;
+}
+
+.life-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #d8d8d8;
+  line-height: 0;
+}
+
+.life-gallery .life-tile img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.45s ease;
+}
+
+.tile-tall img {
+  object-position: center;
+}
+
+.tile-featured img {
+  object-position: center;
+}
+
+.life-tile:hover img {
+  transform: scale(1.03);
+}
+
+.life-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 14px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.38) 42%, rgba(0, 0, 0, 0) 100%);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.life-tile-overlay h3 {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.life-tile-overlay p {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: #f1f1f1;
+}
+
+.life-tile:hover .life-tile-overlay {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tile-standard {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+
+.tile-wide {
+  grid-column: span 2;
+  grid-row: span 1;
+}
+
+.tile-tall {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+.tile-featured {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+/* Fill the top-right desktop gap with card id:5 */
+@media (min-width: 1281px) {
+  .life-gallery .tile-id-5 {
+    grid-column: 5;
+    grid-row: 1;
+  }
+}
+
+.life-tile-text {
+  display: flex;
+  align-items: flex-end;
+  padding: 20px;
+  background: linear-gradient(160deg, #f4f4f4 0%, #e9e9e9 100%);
+}
+
+.life-tile-text p {
+  margin: 0;
+  max-width: 220px;
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  line-height: 1.35;
+  color: #101010;
+}
+
+.life-view-more {
+  margin-top: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 2rem;
+  font-weight: 500;
+  color: #b4103e;
+}
+
+.life-view-more span:first-child {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+@media (max-width: 1280px) {
+  .life-gallery {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-auto-rows: 176px;
+  }
+}
+
+@media (max-width: 960px) {
+  .life-at-university {
+    padding: 64px 16px 58px;
+  }
+
+  .life-gallery {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-rows: 160px;
+  }
+}
+
+@media (max-width: 680px) {
+  .life-gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 150px;
+  }
+
+  .tile-wide,
+  .tile-tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .tile-featured {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+}
+
+@media (max-width: 460px) {
+  .life-title {
+    font-size: clamp(2.7rem, 13vw, 3.8rem);
+  }
+
+  .life-gallery {
+    grid-template-columns: 1fr;
+    grid-auto-rows: 230px;
+  }
+
+  .tile-featured,
+  .tile-wide,
+  .tile-tall {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .life-tile img,
+  .tile-tall img,
+  .tile-featured img {
+    object-position: center center;
+  }
+}

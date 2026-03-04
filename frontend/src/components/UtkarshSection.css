@@ -1,9 +1,30 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;800;900&display=swap');
+
 .utkarsh-section {
-  padding: 80px 20px;
+  padding: 100px 20px;
   position: relative;
   overflow: hidden;
   min-height: 100vh;
-  background: #f5f5f5;
+  background: #000;
+}
+
+/* Dark overlay for better text readability */
+.utkarsh-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+  z-index: 2;
+  pointer-events: none;
 }
 
 .fallback-background {
@@ -14,7 +35,8 @@
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 1;
+  opacity: 0;
+  display: none;
 }
 
 .fallback-background img {
@@ -34,9 +56,23 @@
   z-index: 1;
   overflow: hidden;
   pointer-events: none;
+  background: #000;
 }
 
-.video-background iframe {
+.video-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.video-background iframe,
+.video-background .background-iframe {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -45,10 +81,29 @@
   min-height: 100vh;
   min-width: 177.77vh;
   transform: translate(-50%, -50%);
+  pointer-events: none;
+  border: none;
+}
+
+/* Hide YouTube controls completely */
+.utkarsh-section:hover .video-background iframe {
+  pointer-events: none;
+}
+
+/* Prevent YouTube UI from showing */
+.video-background iframe::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 999;
 }
 
 .utkarsh-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   position: relative;
   z-index: 10;
@@ -56,45 +111,51 @@
 
 .utkarsh-header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 80px;
   background: transparent;
-  padding: 40px 20px;
-  border-radius: 15px;
+  padding: 0 20px;
 }
 
 .utkarsh-title {
-  font-size: 4rem;
-  font-weight: 900;
+  font-size: 4.5rem;
+  font-weight: 800;
   color: #ffffff;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.9), 
-               0 0 30px rgba(0, 0, 0, 0.7),
-               0 0 50px rgba(0, 0, 0, 0.5);
-  line-height: 1.2;
+  margin-bottom: 24px;
+  text-transform: none;
+  letter-spacing: -1px;
+  font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5),
+               0 2px 10px rgba(0, 0, 0, 0.3);
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ffffff 0%, #e0e7ff 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .utkarsh-subtitle {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #ffffff;
-  max-width: 700px;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.95);
+  max-width: 800px;
   margin: 0 auto;
-  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9), 
-               0 0 20px rgba(0, 0, 0, 0.7);
-  line-height: 1.6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.3px;
 }
 
 .fests-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
-  margin-top: 40px;
+  margin-top: 0;
+  align-items: start;
 }
 
 .fest-card {
-  background: var(--fest-color);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 0;
   text-align: left;
@@ -102,42 +163,195 @@
   overflow: hidden;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
+  min-height: 220px;
+  max-height: 220px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.fest-split-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.fest-card.expanded {
+  max-height: 850px;
+  grid-column: 1 / -1;
+  z-index: 100;
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.2);
 }
 
-.fest-video-section {
-  width: 100%;
-  height: 350px;
+.fest-card.expanded:has(.fest-image-wrapper) {
+  max-height: 900px;
+}
+
+.fest-header {
+  padding: 32px 36px;
+  background: transparent;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 220px;
+  transition: all 0.3s ease;
+}
+
+.fest-card.expanded .fest-header {
+  min-height: auto;
+  padding-bottom: 15px;
+}
+
+.fest-expanded-content {
+  display: flex;
+  flex-direction: column;
+  animation: expandCard 0.3s ease-out;
+  position: relative;
+}
+
+.close-video-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+}
+
+.close-video-button:hover {
+  background: rgba(255, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 1);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 6px 16px rgba(255, 0, 0, 0.5);
+}
+
+.close-video-button:active {
+  transform: scale(0.95) rotate(90deg);
+}
+
+.close-video-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes expandCard {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 800px;
+  }
+}
+
+.fest-video-wrapper {
+  width: 100%;
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
   overflow: hidden;
   background: #000;
+  margin-top: 0;
 }
 
-.fest-video-section iframe {
+.fest-video-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  border: none;
 }
 
 .fest-content-section {
-  padding: 30px;
-  background: rgba(255, 255, 255, 0.95);
-  flex: 1;
+  padding: 32px 36px;
+  background: rgba(255, 255, 255, 1);
+}
+
+.fest-image-wrapper {
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.fest-image-wrapper img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
 }
 
 .fest-content {
-  padding: 40px 30px;
+  padding: 25px 30px;
   background: rgba(255, 255, 255, 0.95);
   position: relative;
   z-index: 2;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.play-indicator,
+.expand-indicator {
+  position: absolute;
+  top: 50%;
+  right: 32px;
+  transform: translateY(-50%);
+  opacity: 0.7;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 50%;
+  padding: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fest-card:hover .play-indicator,
+.fest-card:hover .expand-indicator {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.15);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.expand-indicator {
+  opacity: 0.5;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.play-indicator svg,
+.expand-indicator svg {
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.close-button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: var(--fest-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.close-button:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 .fest-card::before {
@@ -146,19 +360,46 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 5px;
-  background: var(--fest-color);
+  height: 4px;
+  background: linear-gradient(90deg, var(--fest-color), var(--fest-color));
   transform: scaleX(0);
-  transition: transform 0.4s ease;
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border-radius: 20px 20px 0 0;
 }
 
 .fest-card:hover::before {
   transform: scaleX(1);
 }
 
-.fest-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+.fest-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  border-radius: 20px;
+}
+
+.fest-card:hover::after {
+  opacity: 1;
+}
+
+.fest-card:hover:not(.expanded) {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 1);
+}
+
+.fest-card.expanded {
+  transform: none;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.4);
 }
 
 .fest-overlay {
@@ -179,43 +420,87 @@
 .fest-name {
   font-size: 2rem;
   font-weight: 700;
-  color: #2d3748;
-  margin-bottom: 10px;
-  transition: color 0.3s ease;
+  color: #1a202c;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  line-height: 1.2;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: -0.5px;
 }
 
 .fest-card:hover .fest-name {
   color: var(--fest-color);
+  transform: translateX(4px);
 }
 
 .fest-category {
-  font-size: 0.9rem;
+  font-size: 0.875rem;
   font-weight: 600;
   color: var(--fest-color);
   text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
+  letter-spacing: 1.5px;
+  margin-bottom: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  opacity: 0.9;
 }
 
 .fest-description {
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: #4a5568;
-  line-height: 1.6;
-  margin-top: 10px;
+  line-height: 1.7;
+  margin-top: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+/* Hide YouTube controls completely */
+.fest-video-wrapper iframe {
+  pointer-events: auto;
+}
+
+/* Ensure YouTube controls are hidden */
+.fest-video-iframe {
+  pointer-events: auto;
+}
+
+/* Hide YouTube UI elements */
+.utkarsh-section .video-background iframe {
+  pointer-events: none !important;
+}
+
+/* Additional CSS to prevent YouTube controls from showing */
+.fest-video-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 50px);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fest-card.expanded .fest-video-wrapper::before {
+  display: none;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .utkarsh-section {
-    padding: 60px 15px;
+    padding: 80px 15px;
+  }
+  
+  .utkarsh-header {
+    margin-bottom: 50px;
   }
 
   .utkarsh-title {
-    font-size: 2rem;
+    font-size: 2.5rem;
+    letter-spacing: -0.5px;
   }
 
   .utkarsh-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .fests-grid {
@@ -224,11 +509,22 @@
   }
 
   .fest-card {
-    padding: 30px 20px;
+    min-height: 180px;
+    max-height: 180px;
   }
 
-  .fest-icon {
-    font-size: 3rem;
+  .fest-card.expanded {
+    max-height: 600px;
+  }
+
+  .fest-header {
+    padding: 20px;
+    min-height: 180px;
+  }
+
+  .fest-content {
+    padding: 20px;
+    min-height: 180px;
   }
 
   .fest-name {
@@ -238,19 +534,58 @@
   .fest-description {
     font-size: 0.9rem;
   }
+
+  .close-video-button {
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+  }
+
+  .close-video-button svg {
+    width: 18px;
+    height: 18px;
+  }
 }
 
 @media (max-width: 480px) {
   .utkarsh-title {
-    font-size: 1.5rem;
-    letter-spacing: 1px;
+    font-size: 2rem;
+    letter-spacing: -0.3px;
   }
 
   .utkarsh-subtitle {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
 
   .fest-card {
-    padding: 25px 15px;
+    min-height: 160px;
+    max-height: 160px;
+  }
+
+  .fest-card.expanded {
+    max-height: 500px;
+  }
+
+  .fest-header {
+    padding: 18px 15px;
+    min-height: 160px;
+  }
+
+  .fest-content {
+    padding: 18px 15px;
+    min-height: 160px;
+  }
+
+  .close-video-button {
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .close-video-button svg {
+    width: 16px;
+    height: 16px;
   }
 }

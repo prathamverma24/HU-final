@@ -1,48 +1,49 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getSectionContent } from '../services/api';
+import heroFallbackImage from '../assets/Distinguished_Leadership.webp';
 import './HeroSection.css';
 
-function HeroSection() {
-  const [videoLoaded, setVideoLoaded] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
+const defaultHeroContent = {
+  badge_text: 'ADMISSIONS 2026 OPEN',
+  title_white: 'ADMISSIONS',
+  title_green: 'OPEN 2026',
+  description: "Join Haridwar University, Uttarakhand's premier destination for future leaders.",
+  apply_now_link: 'https://huroorkee.ac.in/apply-now',
+  campus_tour_link: 'https://huroorkee.ac.in/student-corner/photo-gallery',
+  video_url: 'https://www.youtube.com/embed/blzl5ee5GSU',
+  fallback_image: '/images/hero-fallback.avif',
+  logo_image: '/images/logo.jpeg'
+};
+
+function HeroSection({ refreshTrigger, initialContent }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [content, setContent] = useState({
-    badge_text: 'ADMISSIONS 2026 OPEN',
-    title_white: 'ADMISSIONS',
-    title_green: 'OPEN 2026',
-    description: "Join Haridwar University, Uttarakhand's premier destination for future leaders.",
-    apply_now_link: 'https://huroorkee.ac.in/apply-now',
-    campus_tour_link: 'https://huroorkee.ac.in/student-corner/photo-gallery',
-    video_url: 'https://www.youtube.com/embed/blzl5ee5GSU',
-    fallback_image: '/images/hero-fallback.avif',
-    logo_image: '/images/logo.jpeg'
-  });
+  const [content, setContent] = useState(initialContent || defaultHeroContent);
+  const [videoReady, setVideoReady] = useState(false);
+  const [useImageFallback, setUseImageFallback] = useState(false);
+  const [canShowVideo, setCanShowVideo] = useState(false);
+  const [allowVideo, setAllowVideo] = useState(true);
+  const fallbackTimerRef = useRef(null);
 
   useEffect(() => {
-    // Fetch section content from API
+    if (initialContent != null) {
+      setContent(initialContent);
+      return;
+    }
     const fetchContent = async () => {
       try {
         const data = await getSectionContent('hero');
         setContent(data.content);
       } catch (error) {
         console.error('Error fetching hero content:', error);
-        // Keep default content if fetch fails
       }
     };
     fetchContent();
-
-    // Preload the fallback image
-    const img = new Image();
-    img.src = content.fallback_image;
-    img.onload = () => setImageLoaded(true);
-
-    // Keep fallback image for 5 seconds before showing video
-    const timer = setTimeout(() => {
-      setVideoLoaded(true);
-    }, 5000);
-
-    return () => clearTimeout(timer);
-  }, []);
+    const handleStorageChange = (e) => {
+      if (e.key === 'section_updated_hero') fetchContent();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [refreshTrigger, initialContent]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -52,28 +53,102 @@ function HeroSection() {
     setMobileMenuOpen(false);
   };
 
+  const getYoutubeVideoId = (url) => {
+    if (!url) return 'blzl5ee5GSU';
+
+    if (url.includes('youtube.com/embed/')) {
+      const match = url.match(/embed\/([^?&/]+)/);
+      return match?.[1] || 'blzl5ee5GSU';
+    }
+
+    if (url.includes('youtu.be/')) {
+      const id = url.split('youtu.be/')[1]?.split('?')[0]?.split('&')[0];
+      return id || 'blzl5ee5GSU';
+    }
+
+    if (url.includes('youtube.com/watch') || url.includes('m.youtube.com/watch')) {
+      const query = url.split('?')[1] || '';
+      const params = new URLSearchParams(query);
+      return params.get('v') || 'blzl5ee5GSU';
+    }
+
+    return 'blzl5ee5GSU';
+  };
+
+  const videoId = getYoutubeVideoId(content.video_url || defaultHeroContent.video_url);
+  const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&fs=0&loop=1&playlist=${videoId}&cc_load_policy=0&rel=0&playsinline=1`;
+  const fallbackImageSrc = content.fallback_image || heroFallbackImage;
+
+  useEffect(() => {
+    const saveDataEnabled = navigator.connection?.saveData === true;
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches === true;
+    const isSmallScreen = window.matchMedia?.('(max-width: 768px)')?.matches === true;
+    setAllowVideo(!(saveDataEnabled || prefersReducedMotion || isSmallScreen));
+  }, []);
+
+  useEffect(() => {
+    if (!allowVideo) {
+      setVideoReady(false);
+      setUseImageFallback(true);
+      setCanShowVideo(false);
+      return undefined;
+    }
+
+    setVideoReady(false);
+    setUseImageFallback(false);
+    setCanShowVideo(false);
+
+    const showVideoTimer = window.setTimeout(() => {
+      setCanShowVideo(true);
+    }, 3000);
+
+    fallbackTimerRef.current = window.setTimeout(() => {
+      setUseImageFallback(true);
+    }, 10000);
+
+    return () => {
+      window.clearTimeout(showVideoTimer);
+      if (fallbackTimerRef.current) {
+        window.clearTimeout(fallbackTimerRef.current);
+        fallbackTimerRef.current = null;
+      }
+    };
+  }, [videoId, allowVideo]);
+
   return (
     <section className="hero-section">
-      {/* Loading Spinner */}
-      {!imageLoaded && (
-        <div className="hero-loading">
-          <div className="spinner"></div>
-        </div>
-      )}
-
-      {/* Fallback Background Image */}
-      <div className={`fallback-background ${videoLoaded ? 'fade-out' : ''} ${imageLoaded ? 'loaded' : ''}`}>
-        <img src={content.fallback_image} alt="Haridwar University" />
+      <div className={`fallback-background ${videoReady && canShowVideo && !useImageFallback ? 'fade-out' : ''}`}>
+        <img
+          src={fallbackImageSrc}
+          alt="Campus background fallback"
+          onError={(e) => {
+            if (!e.currentTarget.src.includes('Distinguished_Leadership.webp')) {
+              e.currentTarget.src = heroFallbackImage;
+            }
+          }}
+        />
       </div>
 
       {/* Video Background */}
-      <div className={`video-background ${videoLoaded ? 'fade-in' : ''}`}>
-        <iframe
-          src={`${content.video_url}?autoplay=1&mute=1&loop=1&playlist=${content.video_url.split('/').pop()}&controls=0&modestbranding=1&fs=0`}
-          allow="autoplay; muted"
-          title="Hero Video"
-        />
-      </div>
+      {allowVideo && !useImageFallback && (
+        <div className={`video-background ${videoReady && canShowVideo ? 'fade-in' : ''}`}>
+          <iframe
+            key={videoId}
+            src={videoSrc}
+            allow="autoplay"
+            title="Hero Video"
+            style={{ border: 'none' }}
+            onLoad={() => {
+              setVideoReady(true);
+              if (fallbackTimerRef.current) {
+                window.clearTimeout(fallbackTimerRef.current);
+                fallbackTimerRef.current = null;
+              }
+            }}
+            onError={() => setUseImageFallback(true)}
+          />
+        </div>
+      )}
 
       {/* Logo */}
       <div className="hero-logo">

@@ -1,9 +1,7 @@
 import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import 'swiper/swiper-bundle.css';
 import './AlumniCorner.css';
 
 function AlumniCorner() {
@@ -101,7 +99,7 @@ function AlumniCorner() {
                 <div className="alumni-card">
                   <div className="alumni-card-header">
                     <div className="alumni-image-wrapper">
-                      <img src={alumni.image} alt={alumni.name} className="alumni-image" />
+                      <img src={alumni.image} alt={alumni.name} className="alumni-image" loading="lazy" />
                     </div>
                     <div className="alumni-info">
                       <h3 className="alumni-name">{alumni.name}</h3>

@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getHappening, updateHappening } from '../services/api';
+import AdminNavbar from '../components/AdminNavbar';
 import './AddContent.css';
 
 function EditHappening() {
@@ -28,7 +29,6 @@ function EditHappening() {
         });
         setCurrentImage(happening.image_path);
       } catch (err) {
-        console.error('Error fetching happening:', err);
         setError('Failed to load happening data');
       } finally {
         setFetchLoading(false);
@@ -40,50 +40,32 @@ function EditHappening() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData(prev => ({
-        ...prev,
-        image: file
-      }));
-      
-      // Create preview
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setFormData((prev) => ({ ...prev, image: file }));
+    const reader = new FileReader();
+    reader.onloadend = () => setPreview(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
-
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append('title', formData.title);
-      formDataToSend.append('description', formData.description);
-      if (formData.image) {
-        formDataToSend.append('image', formData.image);
-      }
-
-      const response = await updateHappening(id, formDataToSend);
-      console.log('Happening updated:', response);
-      
+      const payload = new FormData();
+      payload.append('title', formData.title);
+      payload.append('description', formData.description);
+      if (formData.image) payload.append('image', formData.image);
+      await updateHappening(id, payload);
       alert('Happening updated successfully!');
       navigate('/admin/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to update happening. Please try again.');
-      console.error('Error:', err);
     } finally {
       setLoading(false);
     }
@@ -103,24 +85,13 @@ function EditHappening() {
     <div className="add-content-page">
       <div className="add-content-container">
         <div className="page-header">
-          <button onClick={() => navigate('/admin/dashboard')} className="back-btn">
-            ← Back to Dashboard
-          </button>
-          <h1>✏️ Edit Happening</h1>
+          <AdminNavbar title="Edit Happening" />
         </div>
 
         <form onSubmit={handleSubmit} className="content-form">
           <div className="form-group">
             <label htmlFor="title">Happening Title *</label>
-            <input
-              type="text"
-              id="title"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="Enter happening title"
-              required
-            />
+            <input id="title" name="title" type="text" value={formData.title} onChange={handleChange} required />
           </div>
 
           <div className="form-group">
@@ -128,23 +99,16 @@ function EditHappening() {
             <textarea
               id="description"
               name="description"
+              rows="5"
               value={formData.description}
               onChange={handleChange}
-              placeholder="Enter happening description"
-              rows="5"
               required
             />
           </div>
 
           <div className="form-group">
             <label htmlFor="image">Happening Image (leave empty to keep current)</label>
-            <input
-              type="file"
-              id="image"
-              name="image"
-              onChange={handleImageChange}
-              accept="image/*"
-            />
+            <input id="image" name="image" type="file" accept="image/*" onChange={handleImageChange} />
             {preview ? (
               <div className="image-preview">
                 <p>New Image:</p>

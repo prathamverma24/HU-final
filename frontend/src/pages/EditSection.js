@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getSectionContent, updateSectionContent } from '../services/api';
+import AdminNavbar from '../components/AdminNavbar';
 import './AddContent.css';
 
 function EditSection() {
@@ -41,6 +42,12 @@ function EditSection() {
 
     try {
       await updateSectionContent(sectionName, content);
+      
+      // Trigger refresh ONLY for this specific section
+      const timestamp = Date.now().toString();
+      localStorage.setItem(`section_updated_${sectionName}`, timestamp);
+      localStorage.setItem('lastContentUpdate', timestamp);
+      
       alert('Section updated successfully!');
       navigate('/admin/dashboard');
     } catch (error) {
@@ -137,15 +144,6 @@ function EditSection() {
           required
         />
       </div>
-      <div className="form-group">
-        <label>Video URL (YouTube Embed)</label>
-        <input
-          type="url"
-          value={content.video_url || ''}
-          onChange={(e) => updateField('video_url', e.target.value)}
-          placeholder="https://www.youtube.com/embed/VIDEO_ID"
-        />
-      </div>
     </>
   );
 
@@ -177,6 +175,57 @@ function EditSection() {
           onChange={(e) => updateField('know_more_link', e.target.value)}
           required
         />
+      </div>
+      <div className="form-section">
+        <h3>About Cards</h3>
+        {(content.stats || []).map((stat, index) => (
+          <div key={index} className="array-item">
+            <h4>Card {index + 1}</h4>
+            <div className="form-group">
+              <label>Number (optional)</label>
+              <input
+                type="text"
+                value={stat.number || ''}
+                onChange={(e) => updateArrayItem('stats', index, 'number', e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label>Label</label>
+              <input
+                type="text"
+                value={stat.label || ''}
+                onChange={(e) => updateArrayItem('stats', index, 'label', e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label>Icon (optional)</label>
+              <input
+                type="text"
+                value={stat.icon || ''}
+                onChange={(e) => updateArrayItem('stats', index, 'icon', e.target.value)}
+              />
+            </div>
+            <div className="form-group">
+              <label>Image URL or Path</label>
+              <input
+                type="text"
+                value={stat.image || ''}
+                onChange={(e) => updateArrayItem('stats', index, 'image', e.target.value)}
+                placeholder="/images/your-image.jpg"
+              />
+            </div>
+            <button type="button" className="remove-btn" onClick={() => removeArrayItem('stats', index)}>
+              Remove Card
+            </button>
+          </div>
+        ))}
+        <button
+          type="button"
+          className="add-btn"
+          onClick={() => addArrayItem('stats', { number: '', label: '', icon: '', image: '' })}
+        >
+          + Add Card
+        </button>
       </div>
     </>
   );
@@ -254,111 +303,6 @@ function EditSection() {
     </>
   );
 
-  const renderUtkarshEditor = () => (
-    <>
-      <div className="form-group">
-        <label>Title</label>
-        <input
-          type="text"
-          value={content.title || ''}
-          onChange={(e) => updateField('title', e.target.value)}
-          required
-        />
-      </div>
-      <div className="form-group">
-        <label>Subtitle</label>
-        <input
-          type="text"
-          value={content.subtitle || ''}
-          onChange={(e) => updateField('subtitle', e.target.value)}
-        />
-      </div>
-      <div className="form-group">
-        <label>Background Video URL</label>
-        <input
-          type="url"
-          value={content.background_video || ''}
-          onChange={(e) => updateField('background_video', e.target.value)}
-          placeholder="https://www.youtube.com/embed/VIDEO_ID"
-        />
-      </div>
-      <div className="form-group">
-        <label>Background Image Path</label>
-        <input
-          type="text"
-          value={content.background_image || ''}
-          onChange={(e) => updateField('background_image', e.target.value)}
-        />
-      </div>
-      <div className="form-section">
-        <h3>Fests</h3>
-        {(content.fests || []).map((fest, index) => (
-          <div key={index} className="array-item">
-            <h4>Fest {index + 1}</h4>
-            <div className="form-group">
-              <label>Name</label>
-              <input
-                type="text"
-                value={fest.name || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'name', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Category</label>
-              <input
-                type="text"
-                value={fest.category || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'category', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Description</label>
-              <textarea
-                value={fest.description || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'description', e.target.value)}
-                rows="3"
-              />
-            </div>
-            <div className="form-group">
-              <label>Color</label>
-              <input
-                type="text"
-                value={fest.color || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'color', e.target.value)}
-                placeholder="#FF6B6B"
-              />
-            </div>
-            <div className="form-group">
-              <label>Video ID (YouTube)</label>
-              <input
-                type="text"
-                value={fest.video_id || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'video_id', e.target.value)}
-              />
-            </div>
-            <div className="form-group">
-              <label>Image URL</label>
-              <input
-                type="text"
-                value={fest.image_url || ''}
-                onChange={(e) => updateArrayItem('fests', index, 'image_url', e.target.value)}
-              />
-            </div>
-            <button type="button" className="remove-btn" onClick={() => removeArrayItem('fests', index)}>
-              Remove Fest
-            </button>
-          </div>
-        ))}
-        <button
-          type="button"
-          className="add-btn"
-          onClick={() => addArrayItem('fests', { name: '', category: '', description: '', color: '#FF6B6B', video_id: null, image_url: null })}
-        >
-          + Add Fest
-        </button>
-      </div>
-    </>
-  );
 
   const renderTechnicalEditor = () => (
     <>
@@ -424,8 +368,6 @@ function EditSection() {
         return renderAboutEditor();
       case 'why':
         return renderWhyEditor();
-      case 'utkarsh':
-        return renderUtkarshEditor();
       case 'technical':
         return renderTechnicalEditor();
       default:
@@ -438,7 +380,6 @@ function EditSection() {
       hero: 'Hero Section',
       about: 'About Section',
       why: 'Why Section',
-      utkarsh: 'Utkarsh Section',
       technical: 'Technical Section'
     };
     return titles[sectionName] || 'Section';
@@ -446,11 +387,8 @@ function EditSection() {
 
   return (
     <div className="add-content-page">
-      <div className="add-content-header">
-        <h1>Edit {getSectionTitle()}</h1>
-        <button onClick={() => navigate('/admin/dashboard')} className="back-btn">
-          ← Back to Dashboard
-        </button>
+      <div className="page-header">
+        <AdminNavbar title={`Edit ${getSectionTitle()}`} />
       </div>
 
       {error && <div className="error-message">{error}</div>}

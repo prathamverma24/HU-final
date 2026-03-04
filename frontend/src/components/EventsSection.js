@@ -69,9 +69,12 @@ function EventsSection({ events }) {
             const month = eventDate.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
             
             // Handle both local and Cloudinary image paths
-            const imageSrc = event.image_path?.startsWith('http') 
-              ? event.image_path 
-              : `/${event.image_path}`;
+            const rawImagePath = event.image_path || '';
+            const imageSrc = rawImagePath.startsWith('http')
+              ? rawImagePath
+              : rawImagePath.startsWith('/')
+                ? rawImagePath
+                : `/${rawImagePath}`;
             
             return (
               <div key={event.id} className="event-card">
@@ -79,14 +82,12 @@ function EventsSection({ events }) {
                   <img 
                     src={imageSrc} 
                     alt={event.title}
+                    loading="lazy"
                     onError={(e) => {
-                      console.error('Image failed to load:', imageSrc);
                       // Hide the broken image by setting a gradient background
-                      e.target.style.display = 'none';
-                      e.target.parentElement.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    }}
-                    onLoad={(e) => {
-                      console.log('Image loaded successfully:', imageSrc);
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.parentElement.style.background =
+                        'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                     }}
                   />
                   <div className="event-date-badge">

@@ -4,6 +4,9 @@ import Home from './pages/Home';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
 import AdminDashboard from './pages/AdminDashboard';
+import EventsManagement from './pages/EventsManagement';
+import HappeningsManagement from './pages/HappeningsManagement';
+import GlimpsesManagement from './pages/GlimpsesManagement';
 import AddEvent from './pages/AddEvent';
 import AddHappening from './pages/AddHappening';
 import AddGlimpse from './pages/AddGlimpse';
@@ -22,10 +25,13 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/admin/events/manage" element={<EventsManagement />} />
           <Route path="/admin/events/add" element={<AddEvent />} />
           <Route path="/admin/events/edit/:id" element={<EditEvent />} />
+          <Route path="/admin/happenings/manage" element={<HappeningsManagement />} />
           <Route path="/admin/happenings/add" element={<AddHappening />} />
           <Route path="/admin/happenings/edit/:id" element={<EditHappening />} />
+          <Route path="/admin/glimpses/manage" element={<GlimpsesManagement />} />
           <Route path="/admin/glimpses/add" element={<AddGlimpse />} />
           <Route path="/admin/glimpses/edit/:id" element={<EditGlimpse />} />
           <Route path="/admin/sections/edit/:sectionName" element={<EditSection />} />

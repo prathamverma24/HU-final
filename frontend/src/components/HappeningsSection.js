@@ -1,8 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
+import 'swiper/swiper-bundle.css';
 import './HappeningsSection.css';
 
 function HappeningsSection({ happenings }) {
@@ -65,7 +64,7 @@ function HappeningsSection({ happenings }) {
           {displayHappenings.map((happening) => (
             <SwiperSlide key={happening.id}>
               <div className="happening-card">
-                <img src={`/${happening.image_path}`} alt={happening.title} />
+                <img src={`/${happening.image_path}`} alt={happening.title} loading="lazy" />
                 <div className="happening-content">
                   <h3>{happening.title}</h3>
                   <p>{happening.description}</p>

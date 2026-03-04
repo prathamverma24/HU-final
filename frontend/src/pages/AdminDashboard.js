@@ -1,24 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogout, getEvents, getHappenings, getGlimpses, deleteEvent, deleteHappening, deleteGlimpse } from '../services/api';
+import { adminLogout } from '../services/api';
 import './AdminDashboard.css';
 
 function AdminDashboard() {
-  const [admin, setAdmin] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [events, setEvents] = useState([]);
-  const [happenings, setHappenings] = useState([]);
-  const [glimpses, setGlimpses] = useState([]);
   const navigate = useNavigate();
 
   const checkAuth = useCallback(() => {
     try {
-      // Check localStorage for login state
       const isLoggedIn = localStorage.getItem('adminLoggedIn');
       const email = localStorage.getItem('adminEmail');
       
       if (isLoggedIn === 'true' && email) {
-        setAdmin({ email });
+        // User is authenticated
       } else {
         navigate('/admin/login');
       }
@@ -30,37 +25,15 @@ function AdminDashboard() {
     }
   }, [navigate]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const [eventsData, happeningsData, glimpsesData] = await Promise.all([
-        getEvents(),
-        getHappenings(),
-        getGlimpses()
-      ]);
-      setEvents(Array.isArray(eventsData) ? eventsData : []);
-      setHappenings(Array.isArray(happeningsData) ? happeningsData : []);
-      setGlimpses(Array.isArray(glimpsesData) ? glimpsesData : []);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-      // Set empty arrays on error
-      setEvents([]);
-      setHappenings([]);
-      setGlimpses([]);
-    }
-  }, []);
-
   useEffect(() => {
     checkAuth();
-    fetchData();
-  }, [checkAuth, fetchData]);
+  }, [checkAuth]);
 
   const handleLogout = async () => {
     try {
-      // Clear localStorage
       localStorage.removeItem('adminLoggedIn');
       localStorage.removeItem('adminEmail');
       
-      // Try to logout from backend (optional, don't wait for it)
       adminLogout().catch(() => {});
       
       navigate('/admin/login');
@@ -70,240 +43,163 @@ function AdminDashboard() {
     }
   };
 
-  const handleMainWebsite = async () => {
-    // Logout and redirect to main website
-    localStorage.removeItem('adminLoggedIn');
-    localStorage.removeItem('adminEmail');
-    adminLogout().catch(() => {});
-    window.location.href = '/';
-  };
-
-  const handleDeleteEvent = async (eventId) => {
-    if (window.confirm('Are you sure you want to delete this event?')) {
-      try {
-        await deleteEvent(eventId);
-        // Refresh events list
-        fetchData();
-        alert('Event deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting event:', error);
-        alert('Failed to delete event. Please try again.');
-      }
-    }
-  };
-
-  const handleDeleteHappening = async (happeningId) => {
-    if (window.confirm('Are you sure you want to delete this happening?')) {
-      try {
-        await deleteHappening(happeningId);
-        // Refresh happenings list
-        fetchData();
-        alert('Happening deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting happening:', error);
-        alert('Failed to delete happening. Please try again.');
-      }
-    }
-  };
-
-  const handleDeleteGlimpse = async (glimpseId) => {
-    if (window.confirm('Are you sure you want to delete this glimpse?')) {
-      try {
-        await deleteGlimpse(glimpseId);
-        // Refresh glimpses list
-        fetchData();
-        alert('Glimpse deleted successfully!');
-      } catch (error) {
-        console.error('Error deleting glimpse:', error);
-        alert('Failed to delete glimpse. Please try again.');
-      }
-    }
-  };
-
   if (loading) {
     return <div className="admin-dashboard"><p>Loading...</p></div>;
   }
 
   return (
     <div className="admin-dashboard">
-      <div className="dashboard-header">
-        <h1>Admin Dashboard</h1>
-        <div className="admin-info">
-          <span>Welcome, {admin?.email}!</span>
-          <button onClick={handleMainWebsite} className="main-website-btn">
-            🏠 Main Website
+      {/* Blue Header */}
+      <div className="dashboard-top-header">
+        <div className="header-left">
+          <h1>HARIDWAR UNIVERSITY</h1>
+          <p>Content Management System</p>
+        </div>
+        <div className="header-right">
+          <button className="preview-website-btn" onClick={() => window.open('/', '_blank')} title="View Live Website">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9C13.6569 9 15 10.3431 15 12Z" stroke="currentColor" strokeWidth="2"/>
+              <path d="M2 12C2 12 5 5 12 5C19 5 22 12 22 12C22 12 19 19 12 19C5 19 2 12 2 12Z" stroke="currentColor" strokeWidth="2"/>
+            </svg>
+            Live Preview
           </button>
+          <span className="welcome-text">Welcome, admin</span>
           <button onClick={handleLogout} className="logout-btn">Logout</button>
         </div>
       </div>
-      
-      <div className="dashboard-content">
-        {/* Section Management */}
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2>🎨 Website Sections</h2>
+
+      {/* Main Content */}
+      <div className="dashboard-main-content">
+        {/* Page Title */}
+        <div className="page-title-section">
+          <h2>Admin Dashboard</h2>
+          <p>Manage your website content section by section</p>
+        </div>
+
+        {/* Section Cards Grid */}
+        <div className="sections-grid">
+          {/* Hero Section Card */}
+          <div className="section-card hero-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 12H15M9 16H15M17 21H7C5.89543 21 5 20.1046 5 19V5C5 3.89543 5.89543 3 7 3H12.5858C12.851 3 13.1054 3.10536 13.2929 3.29289L18.7071 8.70711C18.8946 8.89464 19 9.149 19 9.41421V19C19 20.1046 18.1046 21 17 21Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h3>Hero Section</h3>
+              <p>Edit main banner, title, subtitle, and CTA buttons</p>
+            </div>
+            <button className="card-btn hero-btn" onClick={() => navigate('/admin/sections/edit/hero')}>
+              Edit Section
+            </button>
           </div>
-          
-          <div className="items-grid">
-            <div className="item-card section-card">
-              <div className="section-icon">🏠</div>
-              <div className="item-info">
-                <h3>Hero Section</h3>
-                <p>Edit main banner, title, and call-to-action buttons</p>
-              </div>
-              <div className="item-actions">
-                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/hero')}>Edit</button>
-              </div>
-            </div>
 
-            <div className="item-card section-card">
-              <div className="section-icon">ℹ️</div>
-              <div className="item-info">
-                <h3>About Section</h3>
-                <p>Edit about text, stats, and research information</p>
-              </div>
-              <div className="item-actions">
-                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/about')}>Edit</button>
-              </div>
+          {/* Placement Stats Card */}
+          <div className="section-card placement-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M16 8V16M12 11V16M8 14V16M6 20H18C19.1046 20 20 19.1046 20 18V6C20 4.89543 19.1046 4 18 4H6C4.89543 4 4 4.89543 4 6V18C4 19.1046 4.89543 20 6 20Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
+            <div className="card-content">
+              <h3>About Section</h3>
+              <p>Update university information and description</p>
+            </div>
+            <button className="card-btn placement-btn" onClick={() => navigate('/admin/sections/edit/about')}>
+              Edit Section
+            </button>
+          </div>
 
-            <div className="item-card section-card">
-              <div className="section-icon">⭐</div>
-              <div className="item-info">
-                <h3>Why Section</h3>
-                <p>Edit reasons to choose Haridwar University</p>
-              </div>
-              <div className="item-actions">
-                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/why')}>Edit</button>
-              </div>
+          {/* Trust Ribbon Card */}
+          <div className="section-card trust-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M9 12L11 14L15 10M20.618 5.984A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </div>
+            <div className="card-content">
+              <h3>Trust Ribbon</h3>
+              <p>Manage recognition and accreditation badges</p>
+            </div>
+            <button className="card-btn trust-btn" onClick={() => navigate('/admin/sections/edit/why')}>
+              Edit Section
+            </button>
+          </div>
 
-            <div className="item-card section-card">
-              <div className="section-icon">🎉</div>
-              <div className="item-info">
-                <h3>Utkarsh Section</h3>
-                <p>Edit festival information and fest cards</p>
-              </div>
-              <div className="item-actions">
-                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/utkarsh')}>Edit</button>
-              </div>
+          {/* Events Management Card */}
+          <div className="section-card events-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" strokeWidth="2"/>
+                <path d="M16 2V6M8 2V6M3 10H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </div>
+            <div className="card-content">
+              <h3>Events Management</h3>
+              <p>Add, edit, and manage university events</p>
+            </div>
+            <button className="card-btn events-btn" onClick={() => navigate('/admin/events/manage')}>
+              Manage Events
+            </button>
+          </div>
 
-            <div className="item-card section-card">
-              <div className="section-icon">💡</div>
-              <div className="item-info">
-                <h3>Technical Section</h3>
-                <p>Edit technical activities and innovation content</p>
-              </div>
-              <div className="item-actions">
-                <button className="edit-btn" onClick={() => navigate('/admin/sections/edit/technical')}>Edit</button>
-              </div>
+          {/* Happenings Management Card */}
+          <div className="section-card happenings-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M19 20H5C3.89543 20 3 19.1046 3 18V6C3 4.89543 3.89543 4 5 4H9L11 6H19C20.1046 6 21 6.89543 21 8V18C21 19.1046 20.1046 20 19 20Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M9 13H15M12 10V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </div>
+            <div className="card-content">
+              <h3>Happenings</h3>
+              <p>Manage latest news and campus happenings</p>
+            </div>
+            <button className="card-btn happenings-btn" onClick={() => navigate('/admin/happenings/manage')}>
+              Manage Happenings
+            </button>
+          </div>
+
+          {/* Glimpses Management Card */}
+          <div className="section-card glimpses-card">
+            <div className="card-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M15 10L19.553 7.724C20.1174 7.44193 20.7762 7.90421 20.7762 8.5547V15.4453C20.7762 16.0958 20.1174 16.5581 19.553 16.276L15 14M5 18H13C14.1046 18 15 17.1046 15 16V8C15 6.89543 14.1046 6 13 6H5C3.89543 6 3 6.89543 3 8V16C3 17.1046 3.89543 18 5 18Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+            <div className="card-content">
+              <h3>Event Glimpses</h3>
+              <p>Add video glimpses and event highlights</p>
+            </div>
+            <button className="card-btn glimpses-btn" onClick={() => navigate('/admin/glimpses/manage')}>
+              Manage Glimpses
+            </button>
           </div>
         </div>
 
-        {/* Events Management Section */}
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2>📅 Events Management</h2>
-            <button className="add-btn" onClick={() => navigate('/admin/events/add')}>
-              + Add Event
-            </button>
-          </div>
-          
-          <div className="items-grid">
-            {events.length > 0 ? (
-              events.map(event => (
-                <div key={event.id} className="item-card">
-                  <img src={`/${event.image_path}`} alt={event.title} />
-                  <div className="item-info">
-                    <h3>{event.title}</h3>
-                    <p>{event.description.substring(0, 100)}...</p>
-                    <span className="item-date">{event.event_date}</span>
-                  </div>
-                  <div className="item-actions">
-                    <button className="edit-btn" onClick={() => navigate(`/admin/events/edit/${event.id}`)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDeleteEvent(event.id)}>Delete</button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-items">No events found. Add your first event!</p>
-            )}
-          </div>
+        {/* More Sections Placeholder */}
+        <div className="more-sections-card">
+          <h3>More Sections</h3>
+          <p>Coming soon...</p>
         </div>
 
-        {/* Happenings Management Section */}
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2>📰 Happenings Management</h2>
-            <button className="add-btn" onClick={() => navigate('/admin/happenings/add')}>
-              + Add Happening
-            </button>
+        {/* Stats Cards */}
+        <div className="stats-grid">
+          <div className="stat-card">
+            <p className="stat-label">Total Sections</p>
+            <p className="stat-value">12</p>
           </div>
-          
-          <div className="items-grid">
-            {happenings.length > 0 ? (
-              happenings.map(happening => (
-                <div key={happening.id} className="item-card">
-                  <img src={`/${happening.image_path}`} alt={happening.title} />
-                  <div className="item-info">
-                    <h3>{happening.title}</h3>
-                    <p>{happening.description.substring(0, 100)}...</p>
-                  </div>
-                  <div className="item-actions">
-                    <button className="edit-btn" onClick={() => navigate(`/admin/happenings/edit/${happening.id}`)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDeleteHappening(happening.id)}>Delete</button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-items">No happenings found. Add your first happening!</p>
-            )}
+          <div className="stat-card">
+            <p className="stat-label">Last Updated</p>
+            <p className="stat-value">Today</p>
           </div>
-        </div>
-
-        {/* Glimpses Management Section */}
-        <div className="dashboard-section">
-          <div className="section-header">
-            <h2>🎬 Event Glimpses Management</h2>
-            <button className="add-btn" onClick={() => navigate('/admin/glimpses/add')}>
-              + Add Glimpse
-            </button>
+          <div className="stat-card">
+            <p className="stat-label">Cache Status</p>
+            <p className="stat-value active">Active</p>
           </div>
-          
-          <div className="items-grid">
-            {glimpses.length > 0 ? (
-              glimpses.map(glimpse => (
-                <div key={glimpse.id} className="item-card">
-                  {glimpse.image_path ? (
-                    <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
-                  ) : (
-                    <div className="video-thumbnail">
-                      <iframe
-                        src={`${glimpse.video_url}?autoplay=0&mute=1`}
-                        title={glimpse.title}
-                        frameBorder="0"
-                        style={{ width: '100%', height: '200px', pointerEvents: 'none' }}
-                      />
-                    </div>
-                  )}
-                  <div className="item-info">
-                    <h3>{glimpse.title}</h3>
-                    <p>{glimpse.description.substring(0, 100)}...</p>
-                    {glimpse.hashtags && (
-                      <span className="item-hashtags">{glimpse.hashtags}</span>
-                    )}
-                  </div>
-                  <div className="item-actions">
-                    <button className="edit-btn" onClick={() => navigate(`/admin/glimpses/edit/${glimpse.id}`)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDeleteGlimpse(glimpse.id)}>Delete</button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="no-items">No glimpses found. Add your first glimpse!</p>
-            )}
+          <div className="stat-card">
+            <p className="stat-label">API Status</p>
+            <p className="stat-value online">Online</p>
           </div>
         </div>
       </div>

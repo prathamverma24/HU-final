@@ -41,6 +41,7 @@ html, body {
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* Touch-friendly buttons on mobile */
@@ -48,5 +49,104 @@ html {
   button, a {
     min-height: 44px;
     min-width: 44px;
+  }
+}
+
+/* Global responsive hardening for homepage sections */
+.home {
+  width: 100%;
+  overflow-x: clip;
+}
+
+.home * {
+  min-width: 0;
+}
+
+.home img,
+.home video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.home .swiper,
+.home .swiper-wrapper,
+.home .swiper-slide {
+  max-width: 100%;
+}
+
+.home h1,
+.home h2,
+.home h3,
+.home h4,
+.home p {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1024px) {
+  .about-section,
+  .accreditations-section,
+  .find-program-section,
+  .sports-gallery,
+  .why-section,
+  .happenings-section,
+  .events-section,
+  .life-at-university,
+  .technical-section,
+  .event-glimpses,
+  .alumni-corner {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .about-grid,
+  .stats-grid,
+  .accreditations-grid,
+  .events-grid,
+  .why-grid,
+  .sports-grid,
+  .activities-grid,
+  .fests-grid {
+    gap: 18px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .about-section,
+  .accreditations-section,
+  .find-program-section,
+  .sports-gallery,
+  .why-section,
+  .happenings-section,
+  .events-section,
+  .life-at-university,
+  .technical-section,
+  .event-glimpses,
+  .alumni-corner {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .events-grid,
+  .sports-grid,
+  .activities-grid,
+  .fests-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .why-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .why-grid,
+  .stats-grid,
+  .accreditations-grid {
+    grid-template-columns: 1fr !important;
   }
 }

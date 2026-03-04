@@ -338,12 +338,16 @@
   padding: 20px;
   background: white;
   border-radius: 10px;
+  flex-wrap: wrap;
+  gap: 15px;
 }
 
 .add-content-header h1 {
   margin: 0;
   color: #1e3c72;
   font-size: 28px;
+  flex: 1;
+  min-width: 200px;
 }
 
 .add-content-form {
@@ -390,6 +394,7 @@
   font-weight: 600;
   transition: background 0.3s;
   margin-top: 10px;
+  width: 100%;
 }
 
 .remove-btn:hover {
@@ -407,6 +412,7 @@
   font-weight: 600;
   transition: all 0.3s;
   margin-top: 10px;
+  width: 100%;
 }
 
 .add-btn:hover {
@@ -429,4 +435,127 @@
   outline: none;
   border-color: #1e3c72;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Mobile Responsive for Section Editor */
+@media (max-width: 768px) {
+  .add-content-header {
+    padding: 15px;
+    margin-bottom: 20px;
+  }
+
+  .add-content-header h1 {
+    font-size: 20px;
+    width: 100%;
+  }
+
+  .back-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .add-content-form {
+    padding: 20px 15px;
+  }
+
+  .form-section {
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .form-section h3 {
+    font-size: 18px;
+  }
+
+  .array-item {
+    padding: 15px;
+  }
+
+  .array-item h4 {
+    font-size: 15px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    font-size: 14px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group input[type="url"] {
+    font-size: 14px;
+    padding: 10px 12px;
+  }
+
+  .remove-btn,
+  .add-btn {
+    font-size: 13px;
+    padding: 10px 16px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-content-header {
+    padding: 12px;
+  }
+
+  .add-content-header h1 {
+    font-size: 18px;
+  }
+
+  .add-content-form {
+    padding: 15px 10px;
+  }
+
+  .form-section h3 {
+    font-size: 16px;
+  }
+
+  .array-item {
+    padding: 12px;
+  }
+
+  .array-item h4 {
+    font-size: 14px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-size: 13px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group input[type="url"] {
+    font-size: 13px;
+    padding: 8px 10px;
+  }
+
+  .remove-btn,
+  .add-btn {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .cancel-btn,
+  .submit-btn {
+    font-size: 14px;
+    padding: 10px;
+  }
 }

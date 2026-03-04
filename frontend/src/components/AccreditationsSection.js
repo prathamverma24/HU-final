@@ -32,22 +32,22 @@ function AccreditationsSection() {
             <h3>Approvals & Accreditations</h3>
             <div className="accreditations-logos">
               <div className="logo-card">
-                <img src="/images/ugc.png" alt="UGC" />
+                <img src="/images/ugc.png" alt="UGC" loading="lazy" />
               </div>
               <div className="logo-card">
-                <img src="/images/Aicte.jpeg" alt="AICTE" />
+                <img src="/images/Aicte.jpeg" alt="AICTE" loading="lazy" />
               </div>
               <div className="logo-card">
-                <img src="/images/NBA.jpeg" alt="NBA" />
+                <img src="/images/NBA.jpeg" alt="NBA" loading="lazy" />
               </div>
               <div className="logo-card">
-                <img src="/images/hulogo.jpeg" alt="HU Logo" />
+                <img src="/images/hulogo.jpeg" alt="HU Logo" loading="lazy" />
               </div>
               <div className="logo-card">
-                <img src="/images/CII.jpeg" alt="CII" />
+                <img src="/images/CII.jpeg" alt="CII" loading="lazy" />
               </div>
               <div className="logo-card">
-                <img src="/images/Assocham.png" alt="ASSOCHAM" />
+                <img src="/images/Assocham.png" alt="ASSOCHAM" loading="lazy" />
               </div>
             </div>
           </div>

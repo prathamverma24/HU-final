@@ -2,14 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { getSectionContent } from '../services/api';
 import './WhySection.css';
 
-function WhySection() {
-  const [content, setContent] = useState({
-    title: 'Why Haridwar University?',
-    description: '',
-    reasons: []
-  });
+const defaultWhyContent = {
+  title: 'Why Haridwar University?',
+  description: '',
+  reasons: []
+};
+
+function WhySection({ refreshTrigger, initialContent }) {
+  const [content, setContent] = useState(initialContent || defaultWhyContent);
 
   useEffect(() => {
+    if (initialContent != null) {
+      setContent(initialContent);
+      return;
+    }
     const fetchContent = async () => {
       try {
         const data = await getSectionContent('why');
@@ -19,7 +25,12 @@ function WhySection() {
       }
     };
     fetchContent();
-  }, []);
+    const handleStorageChange = (e) => {
+      if (e.key === 'section_updated_why') fetchContent();
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [refreshTrigger, initialContent]);
 
   return (
     <section className="why-section">
@@ -38,7 +49,7 @@ function WhySection() {
                 '--title-color': '#10b981'
               }}
             >
-              <img src={reason.image} alt={reason.title} />
+              <img src={reason.image} alt={reason.title} loading="lazy" />
               <div className="why-overlay">
                 <span className="why-number">{reason.id}</span>
                 <h3 className="why-title">{reason.title}</h3>

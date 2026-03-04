@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+import 'swiper/swiper-bundle.css';
 import { getGlimpses } from '../services/api';
 import './EventGlimpses.css';
 
@@ -16,24 +15,22 @@ function EventGlimpses() {
   useEffect(() => {
     const fetchGlimpses = async () => {
       try {
-        console.log('Fetching glimpses from API...');
         const glimpsesData = await getGlimpses();
-        console.log('Glimpses received:', glimpsesData);
-        
+
         // Always include Alumni Meet as first item
         const alumniMeet = {
           id: 'alumni-meet-static',
-          title: "Alumni Meet",
-          description: "A heartwarming reunion of HU family members sharing memories and celebrating success stories",
-          image_path: "images/logo.jpeg",
-          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE",
-          hashtags: "#AlumniMeet #HUFamily #Reunion"
+          title: 'Alumni Meet',
+          description: 'A heartwarming reunion of HU family members sharing memories and celebrating success stories',
+          image_path: 'images/logo.jpeg',
+          video_url: 'https://www.youtube.com/embed/tCmR4YyQGQE',
+          hashtags: '#AlumniMeet #HUFamily #Reunion'
         };
-        
+
         // Validate that glimpsesData is an array
         const apiGlimpses = Array.isArray(glimpsesData) ? glimpsesData : [];
-        const hasAlumniMeet = apiGlimpses.some(g => g.title === "Alumni Meet");
-        
+        const hasAlumniMeet = apiGlimpses.some((g) => g.title === 'Alumni Meet');
+
         if (hasAlumniMeet) {
           setGlimpses(apiGlimpses);
         } else {
@@ -41,16 +38,15 @@ function EventGlimpses() {
         }
       } catch (error) {
         console.error('Error fetching glimpses:', error);
-        console.error('Error details:', error.response || error.message);
-        
+
         // On error, show Alumni Meet as fallback
         const alumniMeet = {
           id: 'alumni-meet-static',
-          title: "Alumni Meet",
-          description: "A heartwarming reunion of HU family members sharing memories and celebrating success stories",
-          image_path: "images/logo.jpeg",
-          video_url: "https://www.youtube.com/embed/tCmR4YyQGQE",
-          hashtags: "#AlumniMeet #HUFamily #Reunion"
+          title: 'Alumni Meet',
+          description: 'A heartwarming reunion of HU family members sharing memories and celebrating success stories',
+          image_path: 'images/logo.jpeg',
+          video_url: 'https://www.youtube.com/embed/tCmR4YyQGQE',
+          hashtags: '#AlumniMeet #HUFamily #Reunion'
         };
         setGlimpses([alumniMeet]);
       } finally {
@@ -61,17 +57,71 @@ function EventGlimpses() {
     fetchGlimpses();
   }, []);
 
+  const getYoutubeVideoId = (url = '') => {
+    if (!url) return '';
+
+    const embedMatch = url.match(/youtube\.com\/embed\/([^?&/]+)/i);
+    if (embedMatch?.[1]) return embedMatch[1];
+
+    const shortMatch = url.match(/youtu\.be\/([^?&/]+)/i);
+    if (shortMatch?.[1]) return shortMatch[1];
+
+    const watchMatch = url.match(/[?&]v=([^?&/]+)/i);
+    if (watchMatch?.[1]) return watchMatch[1];
+
+    return '';
+  };
+
+  const buildEmbedSrc = (url, { autoplay = 1, mute = 1, controls = 0, loop = 1 } = {}) => {
+    const videoId = getYoutubeVideoId(url);
+
+    if (videoId) {
+      const embedUrl = new URL(`https://www.youtube.com/embed/${videoId}`);
+      embedUrl.searchParams.set('autoplay', String(autoplay));
+      embedUrl.searchParams.set('mute', String(mute));
+      embedUrl.searchParams.set('controls', String(controls));
+      embedUrl.searchParams.set('modestbranding', '1');
+      embedUrl.searchParams.set('rel', '0');
+      embedUrl.searchParams.set('playsinline', '1');
+      if (loop) {
+        embedUrl.searchParams.set('loop', '1');
+        embedUrl.searchParams.set('playlist', videoId);
+      } else {
+        embedUrl.searchParams.set('loop', '0');
+      }
+      return embedUrl.toString();
+    }
+
+    // Fallback for non-YouTube/unknown URLs with pre-existing query params.
+    const separator = url.includes('?') ? '&' : '?';
+    return `${url}${separator}autoplay=${autoplay}&mute=${mute}&controls=${controls}&modestbranding=1&rel=0&playsinline=1`;
+  };
+
   const openVideo = (videoUrl) => {
-    // Add autoplay parameter to the video URL
-    const autoplayUrl = videoUrl.includes('?') 
-      ? `${videoUrl}&autoplay=1` 
-      : `${videoUrl}?autoplay=1`;
-    setSelectedVideo(autoplayUrl);
+    setSelectedVideo(buildEmbedSrc(videoUrl, { autoplay: 1, mute: 0, controls: 1, loop: 0 }));
   };
 
   const closeVideo = () => {
     setSelectedVideo(null);
   };
+
+  useEffect(() => {
+    if (!selectedVideo) return undefined;
+
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') closeVideo();
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [selectedVideo]);
 
   if (loading) {
     return (
@@ -89,19 +139,11 @@ function EventGlimpses() {
   return (
     <section className="event-glimpses">
       <div className="glimpses-container">
-        <div className="glimpses-header">
-          <h2 className="glimpses-title">
-            <span className="title-icon">🎉</span>
-            Enjoy the Events with HU Family
-          </h2>
-          <p className="glimpses-subtitle">Relive the memorable moments from our past events</p>
-        </div>
-
         <div className="glimpses-swiper-wrapper">
           <Swiper
             ref={swiperRef}
             modules={[Autoplay, Navigation, Pagination]}
-            spaceBetween={30}
+            spaceBetween={0}
             slidesPerView={1}
             autoplay={{
               delay: 4000,
@@ -119,7 +161,7 @@ function EventGlimpses() {
             speed={800}
             breakpoints={{
               640: {
-                slidesPerView: 1,
+                slidesPerView: 1.2,
               },
               768: {
                 slidesPerView: 2,
@@ -127,12 +169,15 @@ function EventGlimpses() {
               1024: {
                 slidesPerView: 3,
               },
+              1440: {
+                slidesPerView: 4,
+              },
             }}
             className="glimpses-swiper"
           >
             {glimpses.map((glimpse) => (
               <SwiperSlide key={glimpse.id}>
-                <div 
+                <div
                   className="glimpse-card"
                   onClick={() => glimpse.video_url && openVideo(glimpse.video_url)}
                 >
@@ -140,7 +185,7 @@ function EventGlimpses() {
                     {glimpse.video_url ? (
                       <>
                         <iframe
-                          src={`${glimpse.video_url}?autoplay=1&mute=1&loop=1&playlist=${glimpse.video_url.split('/').pop()}&controls=0&modestbranding=1&rel=0`}
+                          src={buildEmbedSrc(glimpse.video_url, { autoplay: 1, mute: 1, controls: 0, loop: 1 })}
                           title={glimpse.title}
                           frameBorder="0"
                           allow="autoplay; muted"
@@ -149,10 +194,10 @@ function EventGlimpses() {
                         <div className="video-overlay"></div>
                       </>
                     ) : glimpse.image_path ? (
-                      <img src={`/${glimpse.image_path}`} alt={glimpse.title} />
+                      <img src={`/${glimpse.image_path}`} alt={glimpse.title} loading="lazy" />
                     ) : (
                       <div className="no-media-placeholder">
-                        <span>🎬</span>
+                        <span>??</span>
                       </div>
                     )}
                     {glimpse.video_url && (
@@ -179,12 +224,12 @@ function EventGlimpses() {
           <div className="glimpses-navigation">
             <button className="glimpses-button-prev" aria-label="Previous glimpse">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
             <button className="glimpses-button-next" aria-label="Next glimpse">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M9 18L15 12L9 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </button>
           </div>
@@ -192,11 +237,11 @@ function EventGlimpses() {
       </div>
 
       {/* Video Modal */}
-      {selectedVideo && (
+      {selectedVideo && typeof document !== 'undefined' && createPortal(
         <div className="video-modal" onClick={closeVideo}>
           <div className="video-modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="close-modal" onClick={closeVideo}>
-              ×
+            <button className="close-modal" onClick={closeVideo} aria-label="Close large video">
+              &times;
             </button>
             <div className="video-wrapper">
               <iframe
@@ -208,7 +253,8 @@ function EventGlimpses() {
               />
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
