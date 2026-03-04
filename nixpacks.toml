@@ -1,8 +1,11 @@
 [build]
-providers = ["python", "apt"]
+providers = ["apt", "python"]
 
 [build.apt]
-pkgs = ["libpq5", "libpq-dev", "postgresql-client"]
+pkgs = ["libpq5", "libpq-dev", "postgresql-client", "gcc", "g++"]
+
+[build.python]
+version = "3.13"
 
 [start]
-cmd = "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --worker-class sync --timeout 120"
+cmd = "gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --worker-class sync --timeout 120 --max-requests 1000"

@@ -10,6 +10,20 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
+# Check if PostgreSQL is available BEFORE importing models
+def check_postgresql_available():
+    """Check if PostgreSQL client libraries are available"""
+    try:
+        import psycopg2
+        return True
+    except ImportError:
+        return False
+
+# Modify DATABASE_URL before importing config if PostgreSQL not available
+if not check_postgresql_available():
+    print("⚠️  PostgreSQL client libraries not found - using SQLite")
+    os.environ['DATABASE_URL'] = None  # Force SQLite fallback
+
 try:
     from backend.config import Config
     from backend.models import db, Admin, Event, Happening, Glimpse, SectionContent
@@ -46,12 +60,7 @@ CORS(app, resources={
 })
 
 # Initialize extensions
-try:
-    db.init_app(app)
-except Exception as e:
-    print(f"⚠️  Warning: Database initialization failed: {e}")
-    print("   App will start without database, using hardcoded defaults only")
-
+db.init_app(app)
 mail = Mail(app)
 login_manager = LoginManager(app)
 
