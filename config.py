@@ -8,28 +8,33 @@ class Config:
     # Secret key for session management and CSRF protection
     SECRET_KEY = os.getenv('SECRET_KEY', 'dev-key-change-in-production-12345')
     
-    # Database configuration with SSL support for Supabase/PostgreSQL
-    # Gets DATABASE_URL from environment variables, defaults to in-memory SQLite
+    # Database configuration with intelligent fallback
     database_url = os.getenv('DATABASE_URL')
     
-    # If no DATABASE_URL is set, use persistent SQLite database file
-    if not database_url:
-        # Use instance folder for database file
+    # Try to use PostgreSQL if available, otherwise use SQLite
+    if database_url and database_url.startswith('postgresql'):
+        try:
+            # Test if psycopg2 and libpq are available
+            import psycopg2
+            
+            # Add SSL mode for PostgreSQL connections (required by most cloud providers)
+            if '?' in database_url:
+                SQLALCHEMY_DATABASE_URI = database_url + '&sslmode=require'
+            else:
+                SQLALCHEMY_DATABASE_URI = database_url + '?sslmode=require'
+        except ImportError:
+            print("⚠️  PostgreSQL client not available, falling back to SQLite")
+            # Fallback to SQLite
+            instance_path = os.path.join(os.path.dirname(__file__), 'instance')
+            os.makedirs(instance_path, exist_ok=True)
+            db_path = os.path.join(instance_path, 'university.db')
+            SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
+    else:
+        # Use persistent SQLite database file
         instance_path = os.path.join(os.path.dirname(__file__), 'instance')
         os.makedirs(instance_path, exist_ok=True)
         db_path = os.path.join(instance_path, 'university.db')
         SQLALCHEMY_DATABASE_URI = f'sqlite:///{db_path}'
-    elif database_url.startswith('postgresql'):
-        # Add SSL mode for PostgreSQL connections (required by Supabase and most cloud providers)
-        if '?' in database_url:
-            # If URL already has query parameters, append with &
-            SQLALCHEMY_DATABASE_URI = database_url + '&sslmode=require'
-        else:
-            # If no query parameters, add with ?
-            SQLALCHEMY_DATABASE_URI = database_url + '?sslmode=require'
-    else:
-        # Use database URL as-is for SQLite or other databases
-        SQLALCHEMY_DATABASE_URI = database_url
     
     # Disable SQLAlchemy modification tracking (saves memory)
     SQLALCHEMY_TRACK_MODIFICATIONS = False

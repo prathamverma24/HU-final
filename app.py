@@ -46,13 +46,21 @@ CORS(app, resources={
 })
 
 # Initialize extensions
-db.init_app(app)
+try:
+    db.init_app(app)
+except Exception as e:
+    print(f"⚠️  Warning: Database initialization failed: {e}")
+    print("   App will start without database, using hardcoded defaults only")
+
 mail = Mail(app)
 login_manager = LoginManager(app)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return Admin.query.get(int(user_id))
+    try:
+        return Admin.query.get(int(user_id))
+    except Exception:
+        return None
 
 # Create upload folder
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -772,18 +780,23 @@ try:
             db.create_all()
         
         # Create default admin user
-        admin = Admin.query.filter_by(username='admin').first()
-        if not admin:
-            admin = Admin(username='admin')
-            admin.set_password('admin123')
-            db.session.add(admin)
-            db.session.commit()
-            print('✅ Admin user created (username: admin, password: admin123)')
-        else:
-            print('✅ Admin user already exists')
+        try:
+            admin = Admin.query.filter_by(username='admin').first()
+            if not admin:
+                admin = Admin(username='admin')
+                admin.set_password('admin123')
+                db.session.add(admin)
+                db.session.commit()
+                print('✅ Admin user created (username: admin, password: admin123)')
+            else:
+                print('✅ Admin user already exists')
+        except Exception as e:
+            print(f'⚠️  Admin creation failed (will retry on next startup): {e}')
+            db.session.rollback()
         
         # Initialize default events to ensure content always exists
-        if Event.query.count() == 0:
+        try:
+            if Event.query.count() == 0:
             default_events = [
                 Event(
                     title='DJ Night',
@@ -832,9 +845,13 @@ try:
                 db.session.add(event)
             db.session.commit()
             print('✅ Default events initialized')
+        except Exception as e:
+            print(f'⚠️  Events initialization failed: {e}')
+            db.session.rollback()
         
         # Initialize default happenings to ensure content always exists
-        if Happening.query.count() == 0:
+        try:
+            if Happening.query.count() == 0:
             default_happenings = [
                 Happening(
                     title='Campus Placement Drive by ROVO AUTOMATIONS',
@@ -877,9 +894,13 @@ try:
                 db.session.add(happening)
             db.session.commit()
             print('✅ Default happenings initialized')
+        except Exception as e:
+            print(f'⚠️  Happenings initialization failed: {e}')
+            db.session.rollback()
         
         # Initialize default glimpses to ensure content always exists
-        if Glimpse.query.count() == 0:
+        try:
+            if Glimpse.query.count() == 0:
             default_glimpses = [
                 Glimpse(
                     title='Alumni Meet',
@@ -918,10 +939,14 @@ try:
                 db.session.add(glimpse)
             db.session.commit()
             print('✅ Default glimpses initialized')
+        except Exception as e:
+            print(f'⚠️  Glimpses initialization failed: {e}')
+            db.session.rollback()
         
         # Initialize default section content
-        import json
-        
+        try:
+            import json
+            
         default_sections = {
             'hero': {
                 'badge_text': 'ADMISSIONS 2026 OPEN',
@@ -989,9 +1014,13 @@ try:
         
         db.session.commit()
         print('✅ Default section content initialized')
+        except Exception as e:
+            print(f'⚠️  Section content initialization failed: {e}')
+            db.session.rollback()
             
 except Exception as e:
     print(f'❌ Database initialization error: {e}')
+    print('   App will continue running with hardcoded content!')
     import traceback
     traceback.print_exc()
 
