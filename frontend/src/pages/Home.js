@@ -65,8 +65,9 @@ function Home() {
           getHappenings(),
           getAllSections()
         ]);
-        setEvents(Array.isArray(eventsData) ? eventsData : []);
-        setHappenings(Array.isArray(happeningsData) ? happeningsData : []);
+        // Use API data if available, otherwise components will use their own defaults
+        setEvents(Array.isArray(eventsData) && eventsData.length > 0 ? eventsData : []);
+        setHappenings(Array.isArray(happeningsData) && happeningsData.length > 0 ? happeningsData : []);
         const byName = {};
         if (Array.isArray(sectionsData)) {
           sectionsData.forEach((s) => {
@@ -76,6 +77,7 @@ function Home() {
         setSections(byName);
       } catch (error) {
         console.error('Error fetching data:', error);
+        // On error, pass empty arrays and let components use their hardcoded defaults
         setEvents([]);
         setHappenings([]);
         setSections({});

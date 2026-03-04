@@ -8,6 +8,7 @@ function HappeningsSection({ happenings }) {
   const swiperRef = useRef(null);
   const [swiperInstance, setSwiperInstance] = useState(null);
 
+  // Hardcoded default happenings to ensure content persistence on Vercel deployment
   const defaultHappenings = [
     {
       id: 1,
@@ -26,6 +27,24 @@ function HappeningsSection({ happenings }) {
       title: 'B.Sc. Agriculture Campus Placement Drive by Nurture Farm',
       description: 'Haridwar University, Roorkee proudly hosted a Campus Placement Drive by Nurture Farm for B.Sc. Agriculture Students offering students a valuable opportunity to begin their professional journey with a global organization. This achievement highlights Haridwar University\'s continuous commitment to enhancing employability, strengthening industry partnerships, and creating impactful career opportunities for its students. Congratulations to all the selected candidates, and best wishes for a successful future ahead!',
       image_path: 'images/mou3.jpeg'
+    },
+    {
+      id: 4,
+      title: 'Academic Excellence Award Ceremony',
+      description: 'The university celebrated the outstanding academic achievements of students across all disciplines. Distinguished faculty members, industry leaders, and accomplished alumni gathered to honor and recognize exceptional performance. The ceremony featured inspiring speeches, certificate presentations, and networking sessions.',
+      image_path: 'images/awards.jpeg'
+    },
+    {
+      id: 5,
+      title: 'Innovation & Research Showcase',
+      description: 'A platform where faculty and students presented groundbreaking research projects and innovative solutions to real-world problems. Topics ranged from sustainable technology to social entrepreneurship, attracting attention from investors and industry professionals.',
+      image_path: 'images/innovation.jpeg'
+    },
+    {
+      id: 6,
+      title: 'International Collaboration Summit',
+      description: 'Haridwar University welcomed delegations from international universities to discuss collaborative research opportunities and student exchange programs. The summit fostered global academic partnerships and opened doors for international cooperation.',
+      image_path: 'images/international.jpeg'
     }
   ];
 

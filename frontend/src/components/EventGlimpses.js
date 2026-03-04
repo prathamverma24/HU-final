@@ -12,43 +12,55 @@ function EventGlimpses() {
   const [loading, setLoading] = useState(true);
   const swiperRef = useRef(null);
 
+  // Hardcoded fallback glimpses to ensure content is always visible
+  const defaultGlimpses = [
+    {
+      id: 'glimpse-1',
+      title: 'Alumni Meet',
+      description: 'A heartwarming reunion of HU family members sharing memories and celebrating success stories',
+      image_path: 'images/logo.jpeg',
+      video_url: 'https://www.youtube.com/embed/tCmR4YyQGQE',
+      hashtags: '#AlumniMeet #HUFamily #Reunion'
+    },
+    {
+      id: 'glimpse-2',
+      title: 'DJ Night 2026',
+      description: 'An electrifying night of music, dance, and celebration with the HU family',
+      image_path: 'images/djnight.jpeg',
+      video_url: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+      hashtags: '#DJNight #HUEvents #Party'
+    },
+    {
+      id: 'glimpse-3',
+      title: 'Campus Festival',
+      description: 'Vibrant campus life with diverse activities, cultural performances, and student showcases',
+      image_path: 'images/campus.jpeg',
+      video_url: 'https://www.youtube.com/embed/jNQXAC9IVRw',
+      hashtags: '#CampusFestival #HUFamily #StudentLife'
+    },
+    {
+      id: 'glimpse-4',
+      title: 'Sports Championship',
+      description: 'Showcase of athletic excellence and team spirit in various sports competitions',
+      image_path: 'images/sports.jpeg',
+      video_url: 'https://www.youtube.com/embed/9bZkp7q19f0',
+      hashtags: '#Sports #Championship #Haridwar'
+    }
+  ];
+
   useEffect(() => {
     const fetchGlimpses = async () => {
       try {
         const glimpsesData = await getGlimpses();
 
-        // Always include Alumni Meet as first item
-        const alumniMeet = {
-          id: 'alumni-meet-static',
-          title: 'Alumni Meet',
-          description: 'A heartwarming reunion of HU family members sharing memories and celebrating success stories',
-          image_path: 'images/logo.jpeg',
-          video_url: 'https://www.youtube.com/embed/tCmR4YyQGQE',
-          hashtags: '#AlumniMeet #HUFamily #Reunion'
-        };
-
         // Validate that glimpsesData is an array
-        const apiGlimpses = Array.isArray(glimpsesData) ? glimpsesData : [];
-        const hasAlumniMeet = apiGlimpses.some((g) => g.title === 'Alumni Meet');
-
-        if (hasAlumniMeet) {
-          setGlimpses(apiGlimpses);
-        } else {
-          setGlimpses([alumniMeet, ...apiGlimpses]);
-        }
+        const apiGlimpses = Array.isArray(glimpsesData) && glimpsesData.length > 0 ? glimpsesData : defaultGlimpses;
+        setGlimpses(apiGlimpses);
       } catch (error) {
         console.error('Error fetching glimpses:', error);
 
-        // On error, show Alumni Meet as fallback
-        const alumniMeet = {
-          id: 'alumni-meet-static',
-          title: 'Alumni Meet',
-          description: 'A heartwarming reunion of HU family members sharing memories and celebrating success stories',
-          image_path: 'images/logo.jpeg',
-          video_url: 'https://www.youtube.com/embed/tCmR4YyQGQE',
-          hashtags: '#AlumniMeet #HUFamily #Reunion'
-        };
-        setGlimpses([alumniMeet]);
+        // On error, always show hardcoded default glimpses
+        setGlimpses(defaultGlimpses);
       } finally {
         setLoading(false);
       }

@@ -5,35 +5,49 @@ function EventsSection({ events }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const eventsPerPage = 4;
 
-  // Default events with DJ Night first
+  // Hardcoded default events to ensure content persistence on Vercel deployment
   const defaultEvents = [
     {
       id: 1,
       title: 'DJ Night',
-      description: "let's groove to music and break the floor. This message is for all come and lets slay the dance the moves on the floor together and make this valentine dreamy.",
+      description: "Let's groove to music and break the floor. This message is for all come and lets slay the dance the moves on the floor together and make this valentine dreamy.",
       event_date: '2026-02-14',
       image_path: '/images/rampwalk.jpeg'
     },
     {
       id: 2,
       title: 'Canvas Competition',
-      description: 'Unleash your creativity in this exciting canvas art competition. Showcase your artistic talent and win amazing prizes...',
+      description: 'Unleash your creativity in this exciting canvas art competition. Showcase your artistic talent and win amazing prizes. Express yourself through colors, strokes, and creative vision.',
       event_date: '2026-02-14',
       image_path: '/images/canvacomp.jpeg'
     },
     {
       id: 3,
       title: 'Photography Competition',
-      description: 'Capture the essence of moments. Participate in our photography competition and exhibit your best work...',
+      description: 'Capture the essence of moments. Participate in our photography competition and exhibit your best work. Show the world through your lens and win spectacular rewards.',
       event_date: '2026-02-14',
       image_path: '/images/photographycomp.jpeg'
     },
     {
       id: 4,
       title: 'Ramp Walk',
-      description: 'Showcase fashion and style on the ramp. A glamorous event featuring latest trends and talented models...',
+      description: 'Showcase fashion and style on the ramp. A glamorous event featuring latest trends and talented models. Walk with confidence and elegance.',
       event_date: '2026-02-15',
       image_path: '/images/rampwalk.jpeg'
+    },
+    {
+      id: 5,
+      title: 'Tech Symposium',
+      description: 'Explore cutting-edge technology and innovation. Learn from industry experts and network with fellow tech enthusiasts. Sessions on AI, Web Development, and Cloud Computing.',
+      event_date: '2026-03-01',
+      image_path: '/images/tech.jpeg'
+    },
+    {
+      id: 6,
+      title: 'Cultural Festival',
+      description: 'Celebrate diverse cultures through music, dance, and food. Experience the rich heritage of India with performances and traditional cuisines from different regions.',
+      event_date: '2026-03-05',
+      image_path: '/images/cultural.jpeg'
     }
   ];
 

@@ -782,6 +782,143 @@ try:
         else:
             print('✅ Admin user already exists')
         
+        # Initialize default events to ensure content always exists
+        if Event.query.count() == 0:
+            default_events = [
+                Event(
+                    title='DJ Night',
+                    description="Let's groove to music and break the floor. This message is for all come and lets slay the dance the moves on the floor together and make this valentine dreamy.",
+                    event_date='2026-02-14',
+                    image_path='images/rampwalk.jpeg',
+                    is_active=True
+                ),
+                Event(
+                    title='Canvas Competition',
+                    description='Unleash your creativity in this exciting canvas art competition. Showcase your artistic talent and win amazing prizes. Express yourself through colors, strokes, and creative vision.',
+                    event_date='2026-02-14',
+                    image_path='images/canvacomp.jpeg',
+                    is_active=True
+                ),
+                Event(
+                    title='Photography Competition',
+                    description='Capture the essence of moments. Participate in our photography competition and exhibit your best work. Show the world through your lens and win spectacular rewards.',
+                    event_date='2026-02-14',
+                    image_path='images/photographycomp.jpeg',
+                    is_active=True
+                ),
+                Event(
+                    title='Ramp Walk',
+                    description='Showcase fashion and style on the ramp. A glamorous event featuring latest trends and talented models. Walk with confidence and elegance.',
+                    event_date='2026-02-15',
+                    image_path='images/rampwalk.jpeg',
+                    is_active=True
+                ),
+                Event(
+                    title='Tech Symposium',
+                    description='Explore cutting-edge technology and innovation. Learn from industry experts and network with fellow tech enthusiasts. Sessions on AI, Web Development, and Cloud Computing.',
+                    event_date='2026-03-01',
+                    image_path='images/tech.jpeg',
+                    is_active=True
+                ),
+                Event(
+                    title='Cultural Festival',
+                    description='Celebrate diverse cultures through music, dance, and food. Experience the rich heritage of India with performances and traditional cuisines from different regions.',
+                    event_date='2026-03-05',
+                    image_path='images/cultural.jpeg',
+                    is_active=True
+                ),
+            ]
+            for event in default_events:
+                db.session.add(event)
+            db.session.commit()
+            print('✅ Default events initialized')
+        
+        # Initialize default happenings to ensure content always exists
+        if Happening.query.count() == 0:
+            default_happenings = [
+                Happening(
+                    title='Campus Placement Drive by ROVO AUTOMATIONS',
+                    description='Haridwar University, Roorkee proudly hosted a Campus Placement Drive by ROVO Automation offering students a valuable opportunity to begin their professional journey with a global organization. The recruitment process witnessed enthusiastic participation from students across various disciplines.',
+                    image_path='images/gueston14.jpeg',
+                    is_active=True
+                ),
+                Happening(
+                    title='Memorandum of Understanding (MoU) with IIT Roorkee',
+                    description='A significant milestone was achieved as the Indian Institute of Technology (IIT) Roorkee and Haridwar University, Roorkee formalized their collaboration through the signing of a Memorandum of Understanding (MoU). This strategic partnership aims to strengthen academic cooperation, promote research and innovation, and create opportunities for knowledge exchange between the two esteemed institutions. The MoU is expected to facilitate collaborative research projects, expert lectures, skill development programs, internships, and other academic initiatives that will benefit students and faculty members alike.',
+                    image_path='images/mou2.jpeg',
+                    is_active=True
+                ),
+                Happening(
+                    title='B.Sc. Agriculture Campus Placement Drive by Nurture Farm',
+                    description='Haridwar University, Roorkee proudly hosted a Campus Placement Drive by Nurture Farm for B.Sc. Agriculture Students offering students a valuable opportunity to begin their professional journey with a global organization. This achievement highlights Haridwar University\'s continuous commitment to enhancing employability, strengthening industry partnerships, and creating impactful career opportunities for its students. Congratulations to all the selected candidates, and best wishes for a successful future ahead!',
+                    image_path='images/mou3.jpeg',
+                    is_active=True
+                ),
+                Happening(
+                    title='Academic Excellence Award Ceremony',
+                    description='The university celebrated the outstanding academic achievements of students across all disciplines. Distinguished faculty members, industry leaders, and accomplished alumni gathered to honor and recognize exceptional performance. The ceremony featured inspiring speeches, certificate presentations, and networking sessions.',
+                    image_path='images/awards.jpeg',
+                    is_active=True
+                ),
+                Happening(
+                    title='Innovation & Research Showcase',
+                    description='A platform where faculty and students presented groundbreaking research projects and innovative solutions to real-world problems. Topics ranged from sustainable technology to social entrepreneurship, attracting attention from investors and industry professionals.',
+                    image_path='images/innovation.jpeg',
+                    is_active=True
+                ),
+                Happening(
+                    title='International Collaboration Summit',
+                    description='Haridwar University welcomed delegations from international universities to discuss collaborative research opportunities and student exchange programs. The summit fostered global academic partnerships and opened doors for international cooperation.',
+                    image_path='images/international.jpeg',
+                    is_active=True
+                ),
+            ]
+            for happening in default_happenings:
+                db.session.add(happening)
+            db.session.commit()
+            print('✅ Default happenings initialized')
+        
+        # Initialize default glimpses to ensure content always exists
+        if Glimpse.query.count() == 0:
+            default_glimpses = [
+                Glimpse(
+                    title='Alumni Meet',
+                    description='A heartwarming reunion of HU family members sharing memories and celebrating success stories',
+                    image_path='images/logo.jpeg',
+                    video_url='https://www.youtube.com/embed/tCmR4YyQGQE',
+                    hashtags='#AlumniMeet #HUFamily #Reunion',
+                    is_active=True
+                ),
+                Glimpse(
+                    title='DJ Night 2026',
+                    description='An electrifying night of music, dance, and celebration with the HU family',
+                    image_path='images/djnight.jpeg',
+                    video_url='https://www.youtube.com/embed/dQw4w9WgXcQ',
+                    hashtags='#DJNight #HUEvents #Party',
+                    is_active=True
+                ),
+                Glimpse(
+                    title='Campus Festival',
+                    description='Vibrant campus life with diverse activities, cultural performances, and student showcases',
+                    image_path='images/campus.jpeg',
+                    video_url='https://www.youtube.com/embed/jNQXAC9IVRw',
+                    hashtags='#CampusFestival #HUFamily #StudentLife',
+                    is_active=True
+                ),
+                Glimpse(
+                    title='Sports Championship',
+                    description='Showcase of athletic excellence and team spirit in various sports competitions',
+                    image_path='images/sports.jpeg',
+                    video_url='https://www.youtube.com/embed/9bZkp7q19f0',
+                    hashtags='#Sports #Championship #Haridwar',
+                    is_active=True
+                ),
+            ]
+            for glimpse in default_glimpses:
+                db.session.add(glimpse)
+            db.session.commit()
+            print('✅ Default glimpses initialized')
+        
         # Initialize default section content
         import json
         
