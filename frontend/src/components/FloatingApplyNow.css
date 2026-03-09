@@ -1,0 +1,272 @@
+.floating-apply-button {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1300;
+  border: 0;
+  border-radius: 6px;
+  background: #64b833;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 14px 24px;
+  cursor: pointer;
+  box-shadow: 0 12px 30px rgba(14, 31, 53, 0.25);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
+}
+
+.floating-apply-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(14, 31, 53, 0.32);
+  background: #57a82b;
+}
+
+.floating-apply-button:active {
+  transform: translateY(0);
+}
+
+.floating-apply-button .apply-arrow {
+  margin-left: 8px;
+}
+
+.apply-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(5, 18, 35, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow-y: auto;
+  padding: 52px 16px 20px;
+}
+
+.apply-modal {
+  width: min(760px, 100%);
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #d9efe2;
+  padding: 24px 22px 20px;
+  position: relative;
+  animation: applyModalIn 0.25s ease;
+}
+
+@keyframes applyModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.apply-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #d5dbe1;
+  background: #ffffff;
+  color: #3f4f63;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.apply-modal h2 {
+  color: #12347e;
+  text-align: center;
+  font-size: 30px;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+
+.apply-subtitle {
+  color: #3f556f;
+  font-size: 15px;
+  text-align: center;
+  margin: 0 auto 16px;
+  max-width: 620px;
+}
+
+.apply-form {
+  border: 1px solid #b5e8cf;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.apply-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.apply-field {
+  margin-bottom: 10px;
+}
+
+.apply-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: #1f3252;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.apply-field input,
+.apply-field select,
+.apply-field textarea {
+  width: 100%;
+  border: 1px solid #cfd8e3;
+  border-radius: 8px;
+  font-size: 16px;
+  color: #23354f;
+  padding: 10px 12px;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.apply-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.apply-field input:focus,
+.apply-field select:focus,
+.apply-field textarea:focus {
+  border-color: #84cb4b;
+  box-shadow: 0 0 0 3px rgba(100, 184, 51, 0.15);
+}
+
+.apply-alert {
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.apply-alert.success {
+  background: #def7e7;
+  color: #14532d;
+}
+
+.apply-alert.error {
+  background: #fde8e8;
+  color: #7f1d1d;
+}
+
+.apply-submit {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  background: #64b833;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 700;
+  padding: 12px 18px;
+  cursor: pointer;
+  margin-top: 2px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.apply-submit:hover:not(:disabled) {
+  background: #57a82b;
+  transform: translateY(-1px);
+}
+
+.apply-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.apply-terms {
+  margin: 12px 0 0;
+  color: #5f6f83;
+  text-align: center;
+  font-size: 13px;
+}
+
+.apply-terms a {
+  color: #0d8f64;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .floating-apply-button {
+    font-size: 18px;
+    padding: 12px 18px;
+  }
+
+  .apply-modal h2 {
+    font-size: 26px;
+  }
+
+  .apply-subtitle {
+    font-size: 14px;
+  }
+
+  .apply-field label {
+    font-size: 15px;
+  }
+
+  .apply-field input,
+  .apply-field select,
+  .apply-field textarea {
+    font-size: 15px;
+    padding: 10px 10px;
+  }
+
+  .apply-submit {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-apply-button {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .apply-modal {
+    padding: 26px 16px 18px;
+  }
+
+  .apply-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .apply-form {
+    padding: 14px;
+  }
+
+  .apply-modal h2 {
+    font-size: 24px;
+    margin-right: 24px;
+  }
+
+  .apply-subtitle {
+    font-size: 15px;
+  }
+
+  .apply-field label {
+    font-size: 16px;
+  }
+
+  .apply-field input,
+  .apply-field select,
+  .apply-field textarea {
+    font-size: 16px;
+  }
+
+  .apply-submit {
+    font-size: 22px;
+  }
+}

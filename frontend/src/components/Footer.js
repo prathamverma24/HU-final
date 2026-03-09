@@ -17,7 +17,6 @@ const footerColumns = {
     { label: 'Artificial Intelligence', href: '/#programs' },
     { label: 'AI and Data Science', href: '/#programs' },
     { label: 'Allied Health Sciences', href: '/#programs' },
-    { label: 'Ayurveda', href: '/#programs' },
     { label: 'Cyber Security', href: '/#programs' },
     { label: 'Business', href: '/#programs' },
     { label: 'Computing', href: '/#programs' },

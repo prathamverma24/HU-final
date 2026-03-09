@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import AdminLogin from './pages/AdminLogin';
@@ -14,29 +14,40 @@ import EditEvent from './pages/EditEvent';
 import EditHappening from './pages/EditHappening';
 import EditGlimpse from './pages/EditGlimpse';
 import EditSection from './pages/EditSection';
+import FloatingApplyNow from './components/FloatingApplyNow';
 import './App.css';
+
+function AppContent() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  return (
+    <div className="App">
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/events/manage" element={<EventsManagement />} />
+        <Route path="/admin/events/add" element={<AddEvent />} />
+        <Route path="/admin/events/edit/:id" element={<EditEvent />} />
+        <Route path="/admin/happenings/manage" element={<HappeningsManagement />} />
+        <Route path="/admin/happenings/add" element={<AddHappening />} />
+        <Route path="/admin/happenings/edit/:id" element={<EditHappening />} />
+        <Route path="/admin/glimpses/manage" element={<GlimpsesManagement />} />
+        <Route path="/admin/glimpses/add" element={<AddGlimpse />} />
+        <Route path="/admin/glimpses/edit/:id" element={<EditGlimpse />} />
+        <Route path="/admin/sections/edit/:sectionName" element={<EditSection />} />
+      </Routes>
+      {!isAdminRoute && <FloatingApplyNow />}
+    </div>
+  );
+}
 
 function App() {
   return (
     <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/events/manage" element={<EventsManagement />} />
-          <Route path="/admin/events/add" element={<AddEvent />} />
-          <Route path="/admin/events/edit/:id" element={<EditEvent />} />
-          <Route path="/admin/happenings/manage" element={<HappeningsManagement />} />
-          <Route path="/admin/happenings/add" element={<AddHappening />} />
-          <Route path="/admin/happenings/edit/:id" element={<EditHappening />} />
-          <Route path="/admin/glimpses/manage" element={<GlimpsesManagement />} />
-          <Route path="/admin/glimpses/add" element={<AddGlimpse />} />
-          <Route path="/admin/glimpses/edit/:id" element={<EditGlimpse />} />
-          <Route path="/admin/sections/edit/:sectionName" element={<EditSection />} />
-        </Routes>
-      </div>
+      <AppContent />
     </Router>
   );
 }

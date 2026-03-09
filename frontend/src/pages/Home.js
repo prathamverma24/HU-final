@@ -38,7 +38,7 @@ function DeferredSection({ children, minHeight = 300 }) {
   }, []);
 
   return (
-    <div ref={sectionRef}>
+    <div ref={sectionRef} className={`deferred-section ${isVisible ? 'visible' : ''}`}>
       {isVisible ? children : <div style={{ minHeight }} aria-hidden="true" />}
     </div>
   );
