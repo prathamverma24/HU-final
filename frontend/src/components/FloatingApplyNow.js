@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { sendContactMessage } from '../services/api';
 import './FloatingApplyNow.css';
 
@@ -13,10 +14,33 @@ const initialForm = {
 };
 
 function FloatingApplyNow() {
-  const [isOpen, setIsOpen] = useState(true);
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [formData, setFormData] = useState(initialForm);
+
+  useEffect(() => {
+    const alreadyAutoOpened = sessionStorage.getItem('applyNowAutoOpened') === '1';
+    if (alreadyAutoOpened) return undefined;
+
+    if (location.pathname === '/') {
+      const handleHomeReady = () => {
+        setIsOpen(true);
+        sessionStorage.setItem('applyNowAutoOpened', '1');
+      };
+
+      window.addEventListener('hu:home-ready', handleHomeReady, { once: true });
+      return () => window.removeEventListener('hu:home-ready', handleHomeReady);
+    }
+
+    const timer = setTimeout(() => {
+      setIsOpen(true);
+      sessionStorage.setItem('applyNowAutoOpened', '1');
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;

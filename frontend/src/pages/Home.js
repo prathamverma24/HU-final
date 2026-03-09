@@ -107,8 +107,18 @@ function Home() {
     };
   }, [refreshKey]);
 
+  useEffect(() => {
+    if (!loading) {
+      window.dispatchEvent(new Event('hu:home-ready'));
+    }
+  }, [loading]);
+
   if (loading) {
-    return <div className="loading">Loading...</div>;
+    return (
+      <div className="loading">
+        <h1 className="loading-university">Haridwar University</h1>
+      </div>
+    );
   }
 
   return (
