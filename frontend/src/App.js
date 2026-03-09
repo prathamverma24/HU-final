@@ -25,6 +25,7 @@ function AppContent() {
     <div className="App">
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/apply-now" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
