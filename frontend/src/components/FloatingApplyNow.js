@@ -21,21 +21,6 @@ function FloatingApplyNow() {
   const [formData, setFormData] = useState(initialForm);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const applyNowParam = (params.get('applyNow') || '').toLowerCase();
-    const forceOpenFromUrl = ['1', 'true', 'yes', 'open'].includes(applyNowParam);
-
-    if (forceOpenFromUrl) {
-      if (location.pathname === '/') {
-        const handleHomeReady = () => setIsOpen(true);
-        window.addEventListener('hu:home-ready', handleHomeReady, { once: true });
-        return () => window.removeEventListener('hu:home-ready', handleHomeReady);
-      }
-
-      setIsOpen(true);
-      return undefined;
-    }
-
     const alreadyAutoOpened = sessionStorage.getItem('applyNowAutoOpened') === '1';
     if (alreadyAutoOpened) return undefined;
 
@@ -55,7 +40,7 @@ function FloatingApplyNow() {
     }, 200);
 
     return () => clearTimeout(timer);
-  }, [location.pathname, location.search]);
+  }, [location.pathname]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
