@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { sendContactMessage } from '../services/api';
 import './FloatingApplyNow.css';
@@ -15,28 +15,32 @@ const initialForm = {
 
 function FloatingApplyNow() {
   const location = useLocation();
+  const hasAutoOpenedRef = useRef(false);
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState({ type: '', message: '' });
   const [formData, setFormData] = useState(initialForm);
 
   useEffect(() => {
-    const alreadyAutoOpened = sessionStorage.getItem('applyNowAutoOpened') === '1';
-    if (alreadyAutoOpened) return undefined;
+    const openApplyModal = () => {
+      if (hasAutoOpenedRef.current) return;
+      hasAutoOpenedRef.current = true;
+      setIsOpen(true);
+    };
 
     if (location.pathname === '/') {
-      const handleHomeReady = () => {
-        setIsOpen(true);
-        sessionStorage.setItem('applyNowAutoOpened', '1');
-      };
+      if (window.__HU_HOME_READY__) {
+        openApplyModal();
+        return undefined;
+      }
 
+      const handleHomeReady = () => openApplyModal();
       window.addEventListener('hu:home-ready', handleHomeReady, { once: true });
       return () => window.removeEventListener('hu:home-ready', handleHomeReady);
     }
 
     const timer = setTimeout(() => {
-      setIsOpen(true);
-      sessionStorage.setItem('applyNowAutoOpened', '1');
+      openApplyModal();
     }, 200);
 
     return () => clearTimeout(timer);

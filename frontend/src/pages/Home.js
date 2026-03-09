@@ -109,8 +109,12 @@ function Home() {
 
   useEffect(() => {
     if (!loading) {
+      window.__HU_HOME_READY__ = true;
       window.dispatchEvent(new Event('hu:home-ready'));
+      return;
     }
+
+    window.__HU_HOME_READY__ = false;
   }, [loading]);
 
   if (loading) {
