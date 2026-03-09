@@ -64,7 +64,7 @@ function FloatingApplyNow() {
         onClick={() => setIsOpen(true)}
         aria-label="Apply now"
       >
-        Apply Now <span className="apply-arrow">-></span>
+        Apply Now <span className="apply-arrow">&rarr;</span>
       </button>
 
       {isOpen && (
@@ -175,7 +175,7 @@ function FloatingApplyNow() {
               {status.message && <div className={`apply-alert ${status.type}`}>{status.message}</div>}
 
               <button className="apply-submit" type="submit" disabled={loading}>
-                {loading ? 'Submitting...' : 'Register ->'}
+                {loading ? 'Submitting...' : 'Register \u2192'}
               </button>
 
               <p className="apply-terms">
