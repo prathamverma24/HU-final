@@ -62,7 +62,7 @@ function FloatingApplyNow() {
     setStatus({ type: '', message: '' });
 
     try {
-      const lmsEndpoint = process.env.REACT_APP_LMS_ENDPOINT || 'https://lms.rceroorkee.ac.in/contact-form-leads';
+      const lmsEndpoint = process.env.REACT_APP_LMS_ENDPOINT || 'http://lms.rceroorkee.ac.in/contact-form-leads';
       const lmsCompany = process.env.REACT_APP_LMS_COMPANY || 'rceroorkee';
       const ytId = process.env.REACT_APP_LMS_YT_ID || '274';
       const normalizedMobile = (formData.mobile || '').replace(/\D/g, '').slice(-10);
