@@ -64,23 +64,16 @@ function FloatingApplyNow() {
     try {
       const lmsEndpoint = process.env.REACT_APP_LMS_ENDPOINT || 'http://lms.rceroorkee.ac.in/contact-form-leads';
       const lmsCompany = process.env.REACT_APP_LMS_COMPANY || 'rceroorkee';
-      const ytId = process.env.REACT_APP_LMS_YT_ID || '274';
-      const normalizedMobile = (formData.mobile || '').replace(/\D/g, '').slice(-10);
       const query = new URLSearchParams({
         company: lmsCompany,
         name: formData.name,
         email: formData.email,
-        phone: normalizedMobile,
-        mobile: normalizedMobile,
+        phone: formData.mobile,
         location: '',
         message: formData.course,
-        course: formData.course,
         city: formData.city,
-        district: formData.city,
-        lead_source: process.env.REACT_APP_LMS_LEAD_SOURCE || 'website_apply_now',
-        state: formData.state,
-        yt_id: ytId,
-        ytid: ytId
+        lead_source: 'website_apply_now',
+        state: formData.state
       });
       const lmsUrl = `${lmsEndpoint}?${query.toString()}`;
       window.location.href = lmsUrl;
