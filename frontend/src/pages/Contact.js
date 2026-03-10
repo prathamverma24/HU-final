@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { sendContactMessage } from '../services/api';
 import Footer from '../components/Footer';
 import './Contact.css';
 
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
+    mobile: '',
     email: '',
     message: ''
   });
@@ -25,9 +25,21 @@ function Contact() {
     setStatus({ type: '', message: '' });
 
     try {
-      await sendContactMessage(formData);
-      setStatus({ type: 'success', message: 'Message sent successfully!' });
-      setFormData({ name: '', email: '', message: '' });
+      const lmsEndpoint = process.env.REACT_APP_LMS_ENDPOINT || 'http://lms.rceroorkee.ac.in/contact-form-leads';
+      const lmsCompany = process.env.REACT_APP_LMS_COMPANY || 'rceroorkee';
+      const query = new URLSearchParams({
+        company: lmsCompany,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.mobile,
+        location: '',
+        message: formData.message,
+        city: '',
+        lead_source: 'website_contact',
+        state: ''
+      });
+      const lmsUrl = `${lmsEndpoint}?${query.toString()}`;
+      window.location.href = lmsUrl;
     } catch (error) {
       setStatus({ type: 'error', message: 'Failed to send message. Please try again.' });
     } finally {
@@ -47,6 +59,17 @@ function Contact() {
               id="name"
               name="name"
               value={formData.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="mobile">Mobile</label>
+            <input
+              type="tel"
+              id="mobile"
+              name="mobile"
+              value={formData.mobile}
               onChange={handleChange}
               required
             />
