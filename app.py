@@ -6,6 +6,9 @@ from werkzeug.utils import secure_filename
 import os
 import sys
 from datetime import datetime
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+from urllib.error import URLError, HTTPError
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -165,6 +168,86 @@ def contact():
         return jsonify({'message': 'Message sent successfully'}), 200
     except Exception as e:
         return jsonify({'error': 'Failed to send message'}), 500
+
+# Apply form to LMS
+@app.route('/api/submit-application', methods=['POST'])
+def submit_application():
+    try:
+        data = request.get_json() or {}
+        name = (data.get('name') or '').strip()
+        email = (data.get('email') or '').strip()
+        mobile = (data.get('mobile') or '').strip()
+        course = (data.get('course') or '').strip()
+        state = (data.get('state') or '').strip()
+        district = (data.get('district') or data.get('city') or '').strip()
+        lead_source = (data.get('lead_source') or 'website_apply_now').strip()
+
+        if not all([name, email, mobile, course, state, district]):
+            return jsonify({
+                'success': False,
+                'message': 'Name, email, mobile, course, state and district are required'
+            }), 400
+
+        lms_endpoint = os.environ.get('LMS_ENDPOINT', 'http://lms.rceroorkee.ac.in/contact-form-leads')
+        lms_company = os.environ.get('LMS_COMPANY', 'rceroorkee')
+
+        lms_data = {
+            'company': lms_company,
+            'name': name,
+            'email': email,
+            'phone': mobile,
+            'location': '',
+            'message': course,
+            'city': district,
+            'lead_source': lead_source,
+            'state': state
+        }
+
+        lms_url = f"{lms_endpoint}?{urlencode(lms_data)}"
+
+        req = Request(
+            lms_url,
+            method='GET',
+            headers={
+                'Accept': 'application/json',
+                'User-Agent': 'HaridwarUniversity/1.0'
+            }
+        )
+
+        try:
+            with urlopen(req, timeout=15) as response:
+                status_code = response.getcode()
+                body = response.read().decode('utf-8', errors='replace')
+
+            return jsonify({
+                'success': 200 <= status_code < 600,
+                'message': 'Application submitted successfully',
+                'data': {'status': status_code, 'response': body}
+            }), 200
+        except HTTPError as http_error:
+            body = ''
+            try:
+                body = http_error.read().decode('utf-8', errors='replace')
+            except Exception:
+                pass
+            return jsonify({
+                'success': False,
+                'message': 'Failed to submit to LMS. Our team will contact you shortly.',
+                'error': str(http_error),
+                'data': {'status': http_error.code, 'response': body}
+            }), 500
+        except URLError as url_error:
+            return jsonify({
+                'success': False,
+                'message': 'Failed to submit to LMS. Our team will contact you shortly.',
+                'error': str(url_error)
+            }), 500
+    except Exception as error:
+        return jsonify({
+            'success': False,
+            'message': 'Failed to submit application',
+            'error': str(error)
+        }), 500
 
 # Admin login
 @app.route('/api/admin/login', methods=['POST'])

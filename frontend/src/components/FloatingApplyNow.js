@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { sendContactMessage } from '../services/api';
 import './FloatingApplyNow.css';
 
 const initialForm = {
@@ -63,22 +62,23 @@ function FloatingApplyNow() {
     setStatus({ type: '', message: '' });
 
     try {
-      await sendContactMessage({
+      const lmsEndpoint = process.env.REACT_APP_LMS_ENDPOINT || 'http://lms.rceroorkee.ac.in/contact-form-leads';
+      const lmsCompany = process.env.REACT_APP_LMS_COMPANY || 'rceroorkee';
+      const query = new URLSearchParams({
+        company: lmsCompany,
         name: formData.name,
         email: formData.email,
-        message:
-          `Application Enquiry\n` +
-          `Mobile: ${formData.mobile}\n` +
-          `Course: ${formData.course}\n` +
-          `State: ${formData.state}\n` +
-          `City: ${formData.city}\n` +
-          `Question: ${formData.question || 'N/A'}`
+        phone: formData.mobile,
+        location: '',
+        message: formData.course,
+        city: formData.city,
+        lead_source: 'website_apply_now',
+        state: formData.state
       });
-
-      setStatus({ type: 'success', message: 'Application request submitted successfully.' });
-      setFormData(initialForm);
+      const lmsUrl = `${lmsEndpoint}?${query.toString()}`;
+      window.location.href = lmsUrl;
     } catch (error) {
-      setStatus({ type: 'error', message: 'Unable to submit right now. Please try again.' });
+      setStatus({ type: 'error', message: 'Unable to redirect right now. Please try again.' });
     } finally {
       setLoading(false);
     }

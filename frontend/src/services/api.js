@@ -47,6 +47,11 @@ export const sendContactMessage = async (data) => {
   return response.data;
 };
 
+export const submitApplication = async (data) => {
+  const response = await api.post('/submit-application', data);
+  return response.data;
+};
+
 // Admin API
 export const adminLogin = async (credentials) => {
   const response = await api.post('/admin/login', credentials);
